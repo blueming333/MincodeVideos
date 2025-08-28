@@ -27,7 +27,7 @@ from config.config import my_config, save_config, languages, audio_languages, tr
     fade_list, audio_types, load_session_state_from_yaml, save_session_state_to_yaml, app_title, GPT_soVITS_languages, CosyVoice_voice
 from main import main_generate_video_content, main_generate_ai_video, main_generate_video_dubbing, \
     main_get_video_resource, main_generate_subtitle, main_try_test_audio, get_audio_voices, main_try_test_local_audio, \
-    main_generate_ai_video_from_img
+    main_generate_ai_video_from_img, main_generate_keyword_from_content
 from pages.common import common_ui
 from services.sd.sd_service import SDService
 from tools.tr_utils import tr
@@ -89,6 +89,10 @@ def try_test_local_audio():
     main_try_test_local_audio()
 
 
+def generate_keyword_from_content():
+    main_generate_keyword_from_content()
+
+
 def generate_video(video_generator):
     save_session_state_to_yaml()
     resource_provider = my_config['resource']['provider']
@@ -122,7 +126,27 @@ with llm_container:
         st.button(label=tr("Generate Video Content"), type="primary", on_click=generate_video_content)
     # print(st.session_state.get("video_content"))
     st.text_area(label=tr("Video content"), key="video_content", height=200)
-    st.text_input(label=tr("Video content keyword"), key="video_keyword")
+
+    # 生成关键词按钮 - 只有当有视频文案但没有主题时才启用
+    video_content = st.session_state.get("video_content", "")
+    video_subject = st.session_state.get("video_subject", "")
+
+    col1, col2 = st.columns([3, 1])
+    with col1:
+        st.text_input(label=tr("Video content keyword"), key="video_keyword")
+    with col2:
+        # 按钮启用条件：有视频文案且视频文案不为空
+        button_enabled = bool(video_content and video_content.strip())
+        button_help = "请先输入视频文案" if not button_enabled else "根据视频文案生成关键词"
+
+        st.button(
+            label=tr("Generate Keywords"),
+            type="secondary",
+            on_click=generate_keyword_from_content,
+            disabled=not button_enabled,
+            help=button_help,
+            use_container_width=True
+        )
 
 # 资源区
 resource_container = st.container(border=True)
@@ -183,6 +207,37 @@ with captioning_container:
                          key="audio_speed")
         with llm_columns[3]:
             st.button(label=tr("Testing Audio"), type="primary", on_click=try_test_audio)
+
+        # MinMax 专属：情绪选择
+        if my_config['audio'].get('provider') == 'MinMax':
+            emotion_map = {
+                "happy": "高兴",
+                "sad": "悲伤",
+                "angry": "愤怒",
+                "fearful": "害怕",
+                "disgusted": "厌恶",
+                "surprised": "惊讶",
+                "calm": "中性",
+            }
+            emotion_options = list(emotion_map.keys())
+            emotion_row = st.columns(4)
+            with emotion_row[0]:
+                st.selectbox(
+                    label=tr("Audio emotion") if hasattr(tr, '__call__') else "Audio emotion",
+                    options=emotion_options,
+                    index=emotion_options.index("calm"),
+                    format_func=lambda x: f"{emotion_map.get(x, x)}({x})",
+                    key="audio_emotion"
+                )
+            with emotion_row[1]:
+                st.slider(
+                    label=tr("Audio volume") if hasattr(tr, '__call__') else "Audio volume",
+                    min_value=0.1,
+                    max_value=2.0,
+                    step=0.1,
+                    value=1.2,
+                    key="audio_vol"
+                )
     if st.session_state.get("audio_type") == "local":
         selected_local_audio_tts_provider = my_config['audio'].get('local_tts', {}).get('provider', '')
         if not selected_local_audio_tts_provider:

@@ -183,6 +183,9 @@ class Captioning(object):
     def captions_from_offline_results(self) -> List[caption_helper.Caption]:
         captions = caption_helper.get_captions(self._user_config["language"], self._user_config["max_line_length"],
                                                self._user_config["lines"], list(self._offline_results))
+        # 无识别结果时直接返回空，避免 IndexError
+        if not captions:
+            return []
         # Save the last caption.
         last_caption = captions[-1]
         last_caption.end = helper.add_time_and_timedelta(last_caption.end, self._user_config["remain_time"])

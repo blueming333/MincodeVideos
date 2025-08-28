@@ -180,6 +180,15 @@ def set_audio_region(provider, key):
     save_config()
 
 
+def set_audio_value(provider, key):
+    if provider not in my_config['audio']:
+        my_config['audio'][provider] = {}
+    # 从key中提取配置项名称（去掉provider前缀和下划线）
+    config_key = key.replace(provider + '_', '')
+    my_config['audio'][provider][config_key] = st.session_state[key]
+    save_config()
+
+
 def set_llm_sk(provider, key):
     my_config['llm'][provider]['secret_key'] = st.session_state[key]
     save_config()
@@ -372,7 +381,7 @@ with audio_container:
                             on_change=set_recognition_value, args=('compute_type', 'recognition_compute_type',))            
 
     # remote Audio config
-    audio_providers = ['Azure', 'Ali', 'Tencent']
+    audio_providers = ['Azure', 'Ali', 'Tencent', 'MinMax']
     selected_audio_provider = my_config['audio']['provider']
     selected_audio_provider_index = 0
     for i, provider in enumerate(audio_providers):
@@ -434,6 +443,33 @@ with audio_container:
                               value=my_config['audio'].get(audio_provider, {}).get('app_key', ''),
                               on_change=set_audio_app_key, key=audio_provider + "_app_key",
                               args=(audio_provider, audio_provider + '_app_key'))
+        if audio_provider == 'MinMax':
+            st.info(tr("Audio MinMax config"))
+            minmax_columns = st.columns(2)
+            with minmax_columns[0]:
+                st.text_input(label=tr("API Key"), type="password",
+                              value=my_config['audio'].get(audio_provider, {}).get('api_key', ''),
+                              on_change=set_audio_value, key=audio_provider + "_api_key",
+                              args=(audio_provider, audio_provider + '_api_key'))
+            with minmax_columns[1]:
+                st.text_input(label=tr("Group ID"),
+                              value=my_config['audio'].get(audio_provider, {}).get('group_id', ''),
+                              on_change=set_audio_value, key=audio_provider + "_group_id",
+                              args=(audio_provider, audio_provider + '_group_id'))
+
+            minmax_columns2 = st.columns(2)
+            with minmax_columns2[0]:
+                st.text_input(label=tr("Base URL"),
+                              value=my_config['audio'].get(audio_provider, {}).get('base_url', 'https://api.minimaxi.com'),
+                              on_change=set_audio_value, key=audio_provider + "_base_url",
+                              args=(audio_provider, audio_provider + '_base_url'))
+            with minmax_columns2[1]:
+                st.selectbox(label=tr("Model"),
+                             options=['speech-2.5-hd-preview', 'speech-2.5-turbo-preview', 'speech-02-hd', 'speech-02-turbo', 'speech-01-hd', 'speech-01-turbo'],
+                             index=['speech-2.5-hd-preview', 'speech-2.5-turbo-preview', 'speech-02-hd', 'speech-02-turbo', 'speech-01-hd', 'speech-01-turbo'].index(
+                                 my_config['audio'].get(audio_provider, {}).get('model', 'speech-2.5-turbo-preview')),
+                             on_change=set_audio_value, key=audio_provider + "_model",
+                             args=(audio_provider, audio_provider + '_model'))
 
 # 设置默认的LLM
 llm_container = st.container(border=True)

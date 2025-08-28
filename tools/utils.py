@@ -150,17 +150,82 @@ def run_ffmpeg_command(command):
 
 
 def extent_audio(audio_file, pad_dur=2):
-    temp_file = generate_temp_filename(audio_file)
-    # 构造ffmpeg命令
-    command = [
-        'ffmpeg',
-        '-i', audio_file,
-        '-af', f'apad=pad_dur={pad_dur}',
-        temp_file
-    ]
-    # 执行命令
-    subprocess.run(command, capture_output=True, check=True)
-    # 重命名最终的文件
-    if os.path.exists(temp_file):
-        os.remove(audio_file)
-        os.renames(temp_file, audio_file)
+    """
+    延长音频文件时长
+
+    Args:
+        audio_file: 音频文件路径
+        pad_dur: 要添加的时长（秒）
+    """
+    try:
+        # 检查文件是否存在
+        if not os.path.exists(audio_file):
+            print(f"错误: 音频文件不存在 - {audio_file}")
+            return False
+
+        # 检查文件大小
+        file_size = os.path.getsize(audio_file)
+        if file_size == 0:
+            print(f"错误: 音频文件为空 - {audio_file}")
+            return False
+
+        temp_file = generate_temp_filename(audio_file)
+
+        # 根据输入文件后缀选择合适的编码参数
+        _, ext = os.path.splitext(audio_file)
+        ext = ext.lower()
+        if ext == '.wav':
+            # 生成真正的PCM WAV，便于后续字幕(wave模块)读取
+            command = [
+                'ffmpeg',
+                '-i', audio_file,
+                '-af', f'apad=pad_dur={pad_dur}',
+                '-c:a', 'pcm_s16le',
+                '-ar', '16000',
+                '-ac', '1',
+                temp_file
+            ]
+        else:
+            # 其它情况保持压缩编码，例如mp3
+            command = [
+                'ffmpeg',
+                '-i', audio_file,
+                '-af', f'apad=pad_dur={pad_dur}',
+                '-c:a', 'mp3',
+                temp_file
+            ]
+
+        print(f"执行FFmpeg命令: {' '.join(command)}")
+
+        # 执行命令，增加超时时间
+        result = subprocess.run(
+            command,
+            capture_output=True,
+            text=True,
+            check=False,  # 不自动抛出异常，以便我们处理
+            timeout=30    # 设置30秒超时
+        )
+
+        if result.returncode == 0:
+            print("FFmpeg 执行成功")
+            # 重命名最终的文件
+            if os.path.exists(temp_file) and os.path.getsize(temp_file) > 0:
+                os.remove(audio_file)
+                os.renames(temp_file, audio_file)
+                print(f"音频文件延长成功: {audio_file}")
+                return True
+            else:
+                print("错误: FFmpeg 执行成功但输出文件无效")
+                return False
+        else:
+            print(f"FFmpeg 执行失败 (退出码: {result.returncode})")
+            print(f"标准输出: {result.stdout}")
+            print(f"标准错误: {result.stderr}")
+            return False
+
+    except subprocess.TimeoutExpired:
+        print(f"FFmpeg 执行超时 (30秒): {audio_file}")
+        return False
+    except Exception as e:
+        print(f"延长音频时出现异常: {e}")
+        return False

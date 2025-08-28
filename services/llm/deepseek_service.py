@@ -23,6 +23,7 @@
 
 from langchain.prompts import PromptTemplate
 from openai import OpenAI
+import httpx
 
 from config.config import my_config
 from services.llm.llm_service import MyLLMService
@@ -40,10 +41,14 @@ class MyDeepSeekService(MyLLMService):
         must_have_value(self.DEEPSEEK_MODEL_NAME, "请设置DeepSeek model")
 
     def generate_content(self, topic: str, prompt_template: PromptTemplate, language: str = None, length: str = None):
+        # 创建自定义httpx客户端，禁用代理和环境变量检测
+        http_client = httpx.Client(proxy=None, trust_env=False)
+
         # 创建 DeepSeek 的 LLM 实例
         llm = OpenAI(
             api_key=self.DEEPSEEK_API_KEY,
-            base_url=self.DEEPSEEK_API_URL
+            base_url=self.DEEPSEEK_API_URL,
+            http_client=http_client
         )
 
         response = llm.chat.completions.create(

@@ -26,12 +26,14 @@ import os
 import streamlit as st
 
 from config.config import my_config, audio_voices_azure, audio_voices_ali, audio_voices_tencent
+from services.audio.minmax_service import minmax_voices
 from services.audio.alitts_service import AliAudioService
 from services.audio.azure_service import AzureAudioService
 from services.audio.chattts_service import ChatTTSAudioService
 from services.audio.gptsovits_service import GPTSoVITSAudioService
 from services.audio.cosyvoice_service import CosyVoiceAudioService
 from services.audio.tencent_tts_service import TencentAudioService
+from services.audio.minmax_service import MinMaxAudioService
 from services.captioning.captioning_service import generate_caption, add_subtitles
 from services.hunjian.hunjian_service import concat_audio_list, get_audio_and_video_list, get_audio_and_video_list_local
 from services.llm.azure_service import MyAzureService
@@ -71,6 +73,8 @@ def get_audio_voices():
         return audio_voices_ali
     if selected_audio_provider == 'Tencent':
         return audio_voices_tencent
+    if selected_audio_provider == 'MinMax':
+        return minmax_voices
 
 
 def get_resource_provider():
@@ -93,6 +97,8 @@ def get_audio_service():
         return AliAudioService()
     if selected_audio_provider == "Tencent":
         return TencentAudioService()
+    if selected_audio_provider == "MinMax":
+        return MinMaxAudioService()
 
 
 def main_generate_video_content():
@@ -114,6 +120,40 @@ def main_generate_video_content():
                                                                      prompt_template=llm_service.keyword_prompt_template)
     print("keyword:", st.session_state.get("video_keyword"))
     print("main_generate_video_content end")
+
+
+def main_generate_keyword_from_content():
+    """
+    根据视频文案生成关键词
+    """
+    print("main_generate_keyword_from_content begin")
+
+    # 检查是否有视频文案
+    video_content = st.session_state.get("video_content")
+    if not video_content or video_content.strip() == "":
+        st.error("请先输入视频文案")
+        return
+
+    try:
+        # 获取LLM服务
+        llm_provider = my_config['llm']['provider']
+        print("llm_provider:", llm_provider)
+        llm_service = get_llm_provider(llm_provider)
+
+        # 生成关键词
+        st.session_state["video_keyword"] = llm_service.generate_content(
+            video_content,
+            prompt_template=llm_service.keyword_prompt_template
+        )
+
+        print("keyword:", st.session_state.get("video_keyword"))
+        st.success("关键词生成成功！")
+        print("main_generate_keyword_from_content end")
+
+    except Exception as e:
+        st.error(f"生成关键词时出错: {str(e)}")
+        print(f"Error generating keywords: {e}")
+        print("main_generate_keyword_from_content end")
 
 
 def main_try_test_local_audio():
@@ -258,6 +298,25 @@ def get_audio_rate():
             audio_rate = "2"
         if audio_speed == "slowest":
             audio_rate = "-2"
+        return audio_rate
+    if audio_provider == "MinMax":
+        audio_speed = st.session_state.get("audio_speed")
+        if audio_speed == "normal":
+            audio_rate = "1.0"
+        elif audio_speed == "fast":
+            audio_rate = "1.3"
+        elif audio_speed == "slow":
+            audio_rate = "0.8"
+        elif audio_speed == "faster":
+            audio_rate = "1.6"
+        elif audio_speed == "slower":
+            audio_rate = "0.6"
+        elif audio_speed == "fastest":
+            audio_rate = "2.0"
+        elif audio_speed == "slowest":
+            audio_rate = "0.5"
+        else:
+            audio_rate = "1.0"  # 默认值
         return audio_rate
 
 

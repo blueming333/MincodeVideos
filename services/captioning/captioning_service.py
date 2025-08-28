@@ -71,7 +71,8 @@ def generate_caption():
                                             format=speech_recognizer_data["audio_stream_format"],
                                             callback=speech_recognizer_data["pull_input_audio_stream_callback"],
                                             stream=speech_recognizer_data["pull_input_audio_stream"])
-        if selected_audio_provider == 'Ali':
+        # 当远程音频提供商为 Ali 或 MinMax 时，统一使用阿里识别服务
+        if selected_audio_provider == 'Ali' or selected_audio_provider == 'MinMax':
             print("selected_audio_provider: Ali")
             ali_service = AliRecognitionService()
             result_list = ali_service.process(get_session_option("audio_output_file"))
@@ -106,7 +107,16 @@ def generate_caption():
                 return
             captioning._offline_results = result_list
 
-    captioning.finish()
+    # 仅当存在离线识别结果或实时识别已产生前一条字幕时再执行finish，避免空结果导致后续IndexError
+    try:
+        has_offline = hasattr(captioning, '_offline_results') and captioning._offline_results
+        has_prev = hasattr(captioning, '_previous_caption') and captioning._previous_caption is not None
+        if has_offline or has_prev:
+            captioning.finish()
+        else:
+            print("captioning skipped: no recognition results")
+    except Exception as e:
+        print(f"captioning finish error: {e}")
 
 
 # 添加字幕

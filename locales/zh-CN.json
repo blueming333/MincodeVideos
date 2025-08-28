@@ -42,8 +42,15 @@
   "Generate Video Content" : "生成视频文案",
   "Video content" : "视频文案",
   "Video content keyword" : "视频文案关键词(英文)",
+  "Generate Keywords" : "生成关键词",
   "Video content language": "视频文案语言",
   "Video length": "视频时长",
+
+  "Audio MinMax config": "MinMax音频配置",
+  "API Key": "API密钥",
+  "Group ID": "用户组ID",
+  "Base URL": "基础URL",
+  "Model": "模型版本",
 
   "Video Source": "视频素材来源",
   "Using Resource:": "使用源:",

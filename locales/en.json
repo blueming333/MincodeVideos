@@ -1,0 +1,17 @@
+{
+  "Video Subject": "Video Subject (comma separated)",
+  "Please input video subject, then click the generate button to generate the video content": "Please input your video subject, then click the generate button to generate the video content",
+  "Please input video subject" : "Please input video subject",
+  "Generate Video Content" : "Generate Video Content",
+  "Video content" : "Video content",
+  "Video content keyword" : "Video content keyword (English)",
+  "Generate Keywords" : "Generate Keywords",
+  "Video content language": "Video content language",
+  "Video length": "Video length",
+
+  "Audio MinMax config": "MinMax Audio Configuration",
+  "API Key": "API Key",
+  "Group ID": "Group ID",
+  "Base URL": "Base URL",
+  "Model": "Model Version"
+}
