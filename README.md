@@ -1,815 +1,611 @@
-<div align="center">
-<a href=""><img src="https://trendshift.io/api/badge/repositories/10489" alt="MoneyPrinterPlus | Trendshift" style="width: 250px; height: 55px;" width="250" height="55"/></a>
-
-
-<h2 align="center">MoneyPrinterPlus</h2>
-
-<p align="center">
-<a href="">
-<img src="https://img.shields.io/github/stars/ddean2009/MoneyPrinterPlus.svg"/></a>
-<a href=""> <img src="https://img.shields.io/github/license/ddean2009/MoneyPrinterPlus"/></a>
-<a href="https://github.com/ddean2009?tab=followers"> 
-<img src="https://img.shields.io/github/followers/ddean2009?label=Followers&style=plastic"/></a>
-<a href="https://github.com/ddean2009/MoneyPrinterPlus/releases/">
-<img alt="GitHub Contributors" src="https://img.shields.io/github/v/release/ddean2009/MoneyPrinterPlus" />
-</a>
-<a href="https://github.com/ddean2009/MoneyPrinterPlus/issues">
-<img alt="Issues" src="https://img.shields.io/github/issues/ddean2009/MoneyPrinterPlus?color=0088ff" />
-</a>
-</p>
-
-**简体中文** | [**English**](docs/en/README.md) | [**日本語**](docs/jp/README.md) 
-
-
-</div>
-
-这是一个轻松赚钱的项目。
-
-短视频时代，谁掌握了流量谁就掌握了Money!
-
-所以给大家分享这个经过精心打造的MoneyPrinter项目。
-
-**它可以：使用AI大模型技术,一键批量生成各类短视频。**
-
-**它可以：一键混剪短视频，批量生成短视频不是梦。**
-
-**它可以：自动把视频发布到抖音,快手,小红书,视频号上。**
-
-赚钱从来没有这么容易过!
-
-觉得有用的朋友，请给个star! ![Github stars](https://img.shields.io/github/stars/ddean2009/MoneyPrinterPlus.svg)
-
-
-# 目录
-
-- [MoneyPrinterPlus](#moneyprinterplus)
-
-- [视频教程](#视频教程)
-- [图文系列教程](#图文系列教程)
-
-- [界面概览](#界面概览)
-  - [1. AI视频批量混剪工具](#1-ai视频批量混剪工具)
-  - [2. AI视频生成器](#2-ai视频生成器)
-  - [3. 批量视频自动上传工具](#3-批量视频自动上传工具)
-  
-- [更新预告](#更新预告)
-
-- [更新列表](#更新列表)
-
-- [已实现功能](#已实现功能)
-
-- [待实现功能](#待实现功能)
-
-- [实例展示](#实例展示)
-
-- [使用方法](#使用方法)
-  - [环境要求](#环境要求)
-  
-  - [安装](#安装)
-    - [前提条件](#前提条件)
-    - [手动安装](#手动安装)
-    - [自动安装](#自动安装)
-    
-  - [运行](#运行)
-    
-    - [自动运行](#自动运行)
-    - [基本配置](#基本配置)
-    
-  - [1. AI视频](#1-ai视频)
-  
-  - [2. 批量视频混剪](#2-批量视频混剪)
-  
-  - [3. 批量短视频上传](#3-批量短视频上传)
-  
-    
-  
-- [常见问题和解决方案](#常见问题和解决方案)
-
-- [讨论组](#讨论组)
-
-
-
-
-# 视频教程
-
-
-[MoneyPrinterPlus一键AI短视频生成工具开源啦](https://www.bilibili.com/video/BV16VVGefEp1/?spm_id_from=333.999.0.0&vd_source=a563b6c970df6e7665845c15089bd618)
-
-[MoneyPrinterPlus AI视频工具详细使用说明](https://www.bilibili.com/video/BV1JKgYe5ERF/?pop_share=1&vd_source=a563b6c970df6e7665845c15089bd618)
-
-[MoneyPrinterPlus AI批量短视频混剪工具使用说明](https://www.bilibili.com/video/BV1v43eekECn/?spm_id_from=333.999.0.0&vd_source=a563b6c970df6e7665845c15089bd618)
-
-[MoneyPrinterPlus小白使用教程来啦!一键万条短视频](https://www.bilibili.com/video/BV1XgaKeGEFb/)
-
-[MoneyPrinterPlus一键批量上传视频功能来啦，让收费见鬼去吧！](https://www.bilibili.com/video/BV1Z7aje7EXc/)
-
-[MoneyPrinterPlus全面支持本地chatTTS模型](https://www.bilibili.com/video/BV1Ng8MePE6L)
-
-[MoneyPrinterPlus无缝对接GPT-SoVITS](https://www.bilibili.com/video/BV1f1HdeKEcM)
-
-# 图文系列教程
-
-[moneyPrinterPlus简介](https://mp.weixin.qq.com/s/0p9T_WFJ_yXcj74TgI7iMw)
-
-[moneyPrinterPlus详细使用教程](https://mp.weixin.qq.com/s/fAdws2grcZknG8VLQfjMjg)
-
-[moneyPrinterPlus阿里云详细配置使用教程](https://mp.weixin.qq.com/s?__biz=MzIxMTI0NzcyMQ==&mid=2650935498&idx=1&sn=7d29a350f36e14686252e9a22d8fce23&chksm=8cae87ccbbd90edaea45b595ec4028b91e464061c0a2f37f1f15e97f593fd7b51edba765ed6e&cur_album_id=1821975747683532806&scene=189#wechat_redirect)
-
-[moneyPrinterPlus腾讯云详细配置使用教程](https://mp.weixin.qq.com/s/VaI-Fy7dDz9dlW5tGM4mhg)
-
-[moneyPrinterPlus微软云详细配置使用教程](https://mp.weixin.qq.com/s/4p6MuDcwIurpVwkcQlWoDA)
-
-[重磅!免费一键批量混剪工具它来了,一天上万短视频不是梦](https://mp.weixin.qq.com/s/gUB18fTwRUvo9dSgk0DXLg)
-
-[MoneyPrinterPlus自动配置环境和自动运行](https://mp.weixin.qq.com/s/k3B08ol1GJVi2EIyfCgWAg)
-
-[MoneyPrinterPlus一键发布短视频到视频号,抖音,快手,小红书上线了](https://mp.weixin.qq.com/s/QOpSbb_q01E0CWAI3KQ89w)
-
-[MoneyPrinterPlus全面支持本地Ollama大模型](https://mp.weixin.qq.com/s/Q1C7kxJytDeQ6v12I5vdoQ)
-
-[在MoneyPrinterPlus中使用本地chatTTS语音模型](https://mp.weixin.qq.com/s/bToXG_3XSYHKVI6Nf5W3Dw)
-
-[fasterWhisper和MoneyPrinterPlus无缝集成](https://mp.weixin.qq.com/s/dSZjpfqUKBz3PyAOYvJKGw)
-
-[再升级!MoneyPrinterPlus集成GPT_SoVITS](https://mp.weixin.qq.com/s/7jdNLemItcJJUhz4OsjlzQ)
-
-
-# 界面概览
-
-## 1. AI视频批量混剪工具
-
-![image-20240628153020140](https://flydean-1301049335.cos.ap-guangzhou.myqcloud.com/img/202406281530983.png)
-
-使用介绍：
-[重磅!免费一键批量混剪工具它来了,一天上万短视频不是梦](https://mp.weixin.qq.com/s/gUB18fTwRUvo9dSgk0DXLg)
-
-## 2. AI视频生成器
-
-![image-20240628153041166](https://flydean-1301049335.cos.ap-guangzhou.myqcloud.com/img/202406281530864.png)
-
-使用介绍：
-[moneyPrinterPlus详细使用教程](https://mp.weixin.qq.com/s/fAdws2grcZknG8VLQfjMjg)
-
-## 3. 批量视频自动上传工具
-
-![image-20240709093858631](https://flydean-1301049335.cos.ap-guangzhou.myqcloud.com/img/202407090939277.png)
-
-![](auto_video_publish.gif)
-
-[MoneyPrinterPlus一键发布短视频到视频号,抖音,快手,小红书上线了](https://mp.weixin.qq.com/s/QOpSbb_q01E0CWAI3KQ89w)
-
-
-# 更新预告
-
-* 准备接入stable diffusion和comfyUI， OOOOO，太牛了！
-* 新增对接cosyvoice语言生成和sensevoice字幕生成。 
-* 已经支持GPTsoVITS本地语音模型啦,教程[再升级!MoneyPrinterPlus集成GPT_SoVITS](https://mp.weixin.qq.com/s/7jdNLemItcJJUhz4OsjlzQ)
-* 已经支持本地语音识别模型fasterwhisper, 教程[fasterWhisper和MoneyPrinterPlus无缝集成](https://mp.weixin.qq.com/s/dSZjpfqUKBz3PyAOYvJKGw)。 可关注我公众号获得最新进度。
-* 已经支持本地语音模型ChatTTS了，教程 [在MoneyPrinterPlus中使用本地chatTTS语音模型](https://mp.weixin.qq.com/s/bToXG_3XSYHKVI6Nf5W3Dw)
-* 支持本地大模型工具Ollama [MoneyPrinterPlus全面支持本地Ollama大模型](https://mp.weixin.qq.com/s/Q1C7kxJytDeQ6v12I5vdoQ)
-* 视频自动发布功能已经上线了！！！！ 使用教程[MoneyPrinterPlus一键发布短视频到视频号,抖音,快手,小红书上线了](https://mp.weixin.qq.com/s/QOpSbb_q01E0CWAI3KQ89w)
-
-# 更新列表
-* 20250208 新增对接cosyvoice语言生成和sensevoice字幕生成。
-* 20241116 添加合并视频功能。不需要配置语音了，只是单纯的进行视频合并。
-
-- 20240927 添加docker file,感谢**子涵**同学提供的dockerfile文件。 
-- 20240905 从V4.5版本开始，提供了小白版的windows版本，大家不需要设置python，ffmpeg环境了.只需要解压缩：1.双击setup.bat. 2.双击start.bat即可运行。
-- 20240813 支持GPTsoVITS本地语音模型
-- 20240807 存储了session值,这样在刷新的时候不需要重新输入信息了
-- 20240722 支持本地语音识别模型fasterwhisper
-- 20240713 支持本地语音模型ChatTTS
-- 20240710 支持本地大模型:Ollama
-- 20240708 逆天了！自动发布视频功能上线了。支持抖音，快手，小红书，视频号！！！
-- 20240704 添加自动安装和自动启动脚本，方便小白使用。
-- 20240628 重磅更新！支持批量视频混剪，批量生成大量不重复的短视频!!!!!!
-- 20240620 优化视频合成效果，让视频结束更加自然。
-- 20240619 语音识别和语音合成**支持腾讯云**。 需要开通腾讯云语音合成和语音识别这两个功能
-- 20240615 语音识别和语音合成**支持阿里云**。 需要开通阿里云智能语音交互功能--必须开通语音合成和录音文件识别（极速版）这两个功能
-- 20240614 资源库支持pixabay,支持语音试听功能,修复一些bug
-
-# 已实现功能
-
-- [x] 支持本地语音模型chatTTS, fasterwhisper等
-- [x] 支持本地语音字幕识别模型
-- [x] 视频批量自动发布到各个视频平台,支持抖音，快手，小红书，视频号！！！
-- [x] 视频批量混剪，批量产出大量不重复的短视频
-- [x] 支持本地视频合并功能
-- [x] 支持本地素材选择(支持各种素材mp4,jpg,png),支持各种分辨率。
-- [x] 云大模型接入OpenAI,Azure,Kimi,Qianfan,Baichuan,Tongyi Qwen, DeepSeek
-- [x] 本地大模型接入Ollama
-- [x] 支持**Azure**语音功能
-- [x] 支持**阿里云**语音功能
-- [x] 支持**腾讯云**语音功能
-- [x] 支持100+不同的语音种类
-- [x] 支持语音试听功能
-- [x] 支持30+种**视频转场特效**
-- [x] 支持不同分辨率，不同尺寸和比例的视频生成
-- [x] 支持语音选择和语速调节
-- [x] 支持背景音乐
-- [x] 支持背景音乐音量调节
-- [x] 支持自定义字幕
-- [x] 覆盖市面上主流的AI大模型工具
-
-# 待实现功能
-
-- [] 支持更多的视频资源获取方式
-- [] 支持更多的视频转场特效
-- [] 支持更多的字幕特效
-- [] 接入stable diffusion，AI生图，合成视频
-- [] 接入Sora等AI视频大模型工具，自动生成视频
-
-# 实例展示
-
-<table>
-<thead>
-<tr>
-<th align="center">竖屏</th>
-<th align="center">横屏</th>
-<th align="center">正方形</th>
-</tr>
-</thead>
-<tr>
-<td align="center"><video  src="https://github.com/ddean2009/MoneyPrinterPlus/assets/13955545/d96e5e50-cfe7-4f55-a0db-75f3ac28b39f"></video></td>
-<td align="center"><video  src="https://github.com/ddean2009/MoneyPrinterPlus/assets/13955545/714b122d-d857-4132-bdd3-9f07c9aa787b"></video></td>
-<td align="center"><video  src="https://github.com/ddean2009/MoneyPrinterPlus/assets/13955545/2ec748c2-8145-4178-ae48-a3114290addd"></video></td>
-</tr>
-</table>
-
-# 使用方法
-
-## 环境要求
-
-- Python 3.10,3.11 安装包： https://www.python.org/ftp/python/3.11.8/python-3.11.8-amd64.exe 
-- ffmpeg 6.1.1 安装包：https://www.gyan.dev/ffmpeg/builds/packages/ffmpeg-6.1.1-essentials_build.zip  
-- windows 必须安装VC： https://aka.ms/vs/17/release/vc_redist.x64.exe 
-- 从V4.5版本开始，提供了小白版的windows版本，大家不需要设置python，ffmpeg环境了.只需要解压缩：1.双击安装vc_redist.x64.exe 2.双击setup.bat. 3.双击start.bat即可运行。
-- LLM api key
-- Azure语音服务(https://speech.microsoft.com/portal) 
-- 或者阿里云智能语音功能(https://nls-portal.console.aliyun.com/overview)
-- 或者腾讯云语音技术功能(https://console.cloud.tencent.com/asr)
-
-> 切记！！！！！ 一定要安装好ffmpeg,并把ffmpeg路径添加到环境变量中。
-
-## 安装
-
-### 前提条件
-
-1. 确保你有Python 3.10+的运行环境。如果是windows, 请确保安装了python路径已经添加到了PATH中。
-2. 确保你有ffmpeg 6.0+的运行环境。如果是windows, 请确保安装了ffmpeg路径已经添加到了PATH中。没有安装ffmpeg的朋友，请通过 https://ffmpeg.org/ 来安装对应的版本。
-
-从V4.5版本开始，提供了小白版的windows版本，大家不需要设置python，ffmpeg环境了.只需要解压缩：1.双击安装vc_redist.x64.exe 2.双击setup.bat. 3.双击start.bat即可运行。
-
-### 手动安装
-
-如果python和ffmpeg环境都有了。那么就可以通过pip安装依赖包了。
-
+# MoneyPrinterPlus 项目详细文档
+
+## 项目概述
+
+MoneyPrinterPlus 是一个基于AI技术的全栈短视频生成和发布工具。该项目旨在帮助用户快速生成高质量的短视频内容，并支持批量自动发布到各大视频平台。
+
+### 主要特性
+- 🤖 **AI视频生成**: 使用大语言模型自动生成视频脚本和内容
+- 🎬 **视频混剪**: 支持批量视频混剪，快速生成大量不重复的短视频
+- 📢 **自动发布**: 支持一键发布到抖音、快手、小红书、视频号等平台
+- 🎵 **多语音支持**: 集成Azure、阿里云、腾讯云等语音服务，支持本地TTS模型
+- 🌐 **多语言界面**: 支持中文、英文等多语言界面
+- 🔧 **模块化设计**: 高度模块化的架构，便于扩展和维护
+
+## 项目架构与设计方案
+
+### 整体架构
+
+```
+MoneyPrinterPlus/
+├── config/              # 配置文件管理
+├── pages/               # Streamlit页面组件
+├── services/            # 业务服务层
+│   ├── audio/          # 音频处理服务
+│   ├── captioning/     # 字幕生成服务
+│   ├── hunjian/        # 视频混剪服务
+│   ├── llm/           # 大语言模型服务
+│   ├── publisher/      # 视频发布服务
+│   ├── resource/       # 资源获取服务
+│   ├── sd/            # Stable Diffusion服务
+│   └── video/         # 视频处理服务
+├── tools/              # 工具类库
+├── work/               # 工作目录
+├── final/              # 输出目录
+└── 主入口文件
+```
+
+### 设计模式
+
+1. **MVC模式**: 采用Model-View-Controller模式
+   - Model: 服务层(services/)处理业务逻辑
+   - View: Streamlit页面(pages/)提供用户界面
+   - Controller: 主程序(main.py)协调各组件
+
+2. **工厂模式**: LLM服务使用工厂模式创建不同提供商的服务实例
+
+3. **策略模式**: 音频服务支持多种TTS提供商，通过配置动态选择
+
+4. **模板方法模式**: 视频生成流程定义模板，各服务实现具体步骤
+
+### 核心设计原则
+
+- **模块化**: 每个功能模块相对独立，便于维护和扩展
+- **配置化**: 大量配置项通过YAML文件管理
+- **插件化**: 支持动态加载不同的AI模型和服务
+- **容错性**: 完善的异常处理和日志记录机制
+
+## 核心业务流程
+
+### 1. AI视频生成流程
+
+```mermaid
+graph TD
+    A[用户输入主题] --> B[LLM生成脚本]
+    B --> C[生成关键词]
+    C --> D[获取视频资源]
+    D --> E[生成配音]
+    E --> F[生成字幕]
+    F --> G[视频合成]
+    G --> H[添加特效]
+    H --> I[输出最终视频]
+```
+
+### 2. 视频混剪流程
+
+```mermaid
+graph TD
+    A[配置场景素材] --> B[准备文案文件]
+    B --> C[选择配音服务]
+    C --> D[批量生成配音]
+    D --> E[视频资源匹配]
+    E --> F[视频标准化]
+    F --> G[视频合成]
+    G --> H[批量输出]
+```
+
+### 3. 自动发布流程
+
+```mermaid
+graph TD
+    A[配置发布平台] --> B[启动浏览器调试]
+    B --> C[用户登录平台]
+    C --> D[选择视频文件]
+    D --> E[填写发布信息]
+    E --> F[自动发布执行]
+    F --> G[发布完成]
+```
+
+## 主要功能模块详解
+
+### 1. LLM服务模块 (`services/llm/`)
+
+**核心功能**: 集成多种大语言模型提供商
+
+**支持的模型**:
+- OpenAI GPT系列
+- Azure OpenAI
+- Moonshot
+- 百度千帆
+- 百度文心一言
+- 阿里通义千问
+- DeepSeek
+- Ollama (本地部署)
+
+**设计模式**: 抽象工厂模式 + 策略模式
+
+```python
+# 服务创建工厂
+def get_llm_provider(provider_name):
+    providers = {
+        'openai': MyOpenAIService(),
+        'azure': MyAzureService(),
+        'moonshot': MyMoonshotService(),
+        # ... 其他提供商
+    }
+    return providers.get(provider_name)
+```
+
+### 2. 音频服务模块 (`services/audio/`)
+
+**核心功能**: 语音合成和语音识别
+
+**支持的服务**:
+- **云端TTS**: Azure, 阿里云, 腾讯云
+- **本地TTS**: ChatTTS, GPT-SoVITS, CosyVoice
+- **语音识别**: FasterWhisper, SenseVoice
+
+**架构特点**:
+- 统一的接口设计
+- 动态配置加载
+- 支持音频试听功能
+
+### 3. 视频服务模块 (`services/video/`)
+
+**核心功能**: 视频处理和合成
+
+**主要组件**:
+- `VideoService`: 核心视频处理服务
+- `VideoMixService`: 视频混剪服务
+- `VideoMergeService`: 视频合并服务
+- `texiao_service`: 视频特效处理
+
+**技术实现**:
+- 使用FFmpeg进行视频处理
+- 支持多种视频格式转换
+- 实现视频标准化和特效添加
+
+### 4. 资源服务模块 (`services/resource/`)
+
+**核心功能**: 获取视频和图片资源
+
+**支持的平台**:
+- Pexels: 免费图片视频素材库
+- Pixabay: 免费图片视频素材库
+- Stable Diffusion: AI图像生成
+
+### 5. 发布服务模块 (`services/publisher/`)
+
+**核心功能**: 自动发布视频到各大平台
+
+**支持平台**:
+- 抖音 (Douyin)
+- 快手 (Kuaishou)
+- 小红书 (Xiaohongshu)
+- 视频号 (Shipinhao)
+- Bilibili
+
+**技术实现**:
+- 基于Selenium的自动化操作
+- 支持Chrome和Firefox浏览器
+- 实现页面元素定位和模拟点击
+
+## 技术栈
+
+### 后端技术栈
+- **Python 3.10+**: 主编程语言
+- **Streamlit**: Web界面框架
+- **FFmpeg**: 视频音频处理
+- **OpenAI API**: 大语言模型接口
+- **Azure Cognitive Services**: 语音服务
+- **Selenium**: 自动化测试框架
+
+### 依赖管理
+主要依赖包详见 `requirements.txt`:
+
+```txt
+langchain==0.1.20              # LLM框架
+streamlit==1.34.0              # Web界面
+torch==2.3.1                   # PyTorch深度学习框架
+faster-whisper==1.0.3          # 本地语音识别
+selenium==4.20.0               # 自动化操作
+azure-cognitiveservices-speech==1.36.0  # Azure语音服务
+```
+
+## 环境搭建和运行指南
+
+### 环境要求
+
+#### 基础环境
+- **操作系统**: Windows 10+ / macOS 12+ / Ubuntu 18.04+
+- **Python**: 3.10 或 3.11
+- **内存**: 至少8GB RAM
+- **存储**: 至少10GB可用空间
+
+#### 必需工具
+- **FFmpeg**: 视频音频处理工具
+- **Git**: 版本控制工具
+
+### 安装步骤
+
+#### 1. 克隆项目
 ```bash
+git clone https://github.com/ddean2009/MoneyPrinterPlus.git
+cd MoneyPrinterPlus
+```
+
+#### 2. 安装Python依赖
+```bash
+# 方式1: 手动安装
 pip install -r requirements.txt
-```
 
-### 自动安装
-
-进入项目目录，windows下双击执行：
-
-```bash
+# 方式2: 自动安装 (推荐)
+# Windows
 setup.bat
-```
-
-mac或者linux下执行：
-
-```bash
+# macOS/Linux
 bash setup.sh
 ```
 
-## 运行
+#### 3. 配置环境变量
 
-使用下面命令运行程序:
+**FFmpeg安装**:
+```bash
+# Windows: 下载并解压到任意目录，将bin目录添加到PATH
+# macOS: brew install ffmpeg
+# Ubuntu: sudo apt install ffmpeg
+```
 
+**浏览器配置**:
+- Chrome浏览器版本需与ChromeDriver匹配
+- Firefox浏览器版本需与geckodriver匹配
+
+### 运行项目
+
+#### 开发模式运行
 ```bash
 streamlit run gui.py
 ```
 
-### 自动运行
-
-如果你使用了自动安装脚本，那么可以执行下面的脚本来自动运行。
-
-windows下,双击 start.bat
-
-mac或者linux下执行：
-
+#### 生产模式运行
 ```bash
+# Windows
+start.bat
+# macOS/Linux
 bash start.sh
 ```
 
-在日志文件中可以看到程序运行的日志信息。
+## 编译、调试、测试验证方法
 
-里面有浏览器的地址，可以通过浏览器打开这个地址来访问程序。
+### 调试方法
 
-打开之后，你会看到下面的界面：
-
-![image-20240612135131890](https://flydean-1301049335.cos.ap-guangzhou.myqcloud.com/img/202406121351010.png)
-
-
-
-左侧目前有三项配置， 分别是基本配置，AI视频和混剪视频(开发中)。
-
-### 基本配置
-
-#### 1. 资源库
-
-目前资源支持：
-
-* pexels:  [www.pexels.com](https://www.pexels.com/)  **Pexels** 是世界上著名的免费图片，视频素材网站。
-* pixabay: [pixabay.com](https://pixabay.com/) 
-
-大家需要到对应的网站上注册一个key来实现API调用。
-
->  后续会陆续添加其他资源库。如（[videvo.net](https://www.videvo.net)，[videezy.com](https://www.videezy.com) 等）
->
->  
-
-#### 2. 音频库
-
-目前文字转语音和语音识别功能支持：
-1. Azure的cognitive-services服务。
-2. 阿里云的智能语音交互
-3. 腾讯云语音技术功能(https://console.cloud.tencent.com/asr)
-
-* Azure：
-
-大家需要到  https://speech.microsoft.com/portal  这里注册一个key。
-
-Azure对新用户是1年免费的。费用也是比较便宜。
-
-* 阿里云：
-
-大家需要到 https://nls-portal.console.aliyun.com/overview 这里开通服务，并添加一个项目。
-
-需要开通阿里云智能语音交互功能--必须开通语音合成和录音文件识别（极速版）这两个功能.
-
-* 腾讯云：
-
-腾讯云语音技术功能(https://console.cloud.tencent.com/asr) 开通语音识别和语音合成功能。
-
-
->  后续会添加本地语音识别大模型。但是文字转语音还是微软的服务最为优秀。
-
-![image-20240612135624840](https://flydean-1301049335.cos.ap-guangzhou.myqcloud.com/img/202406121356171.png)
-
-#### 3. LLM大模型
-
-大模型区目前支持Moonshot,openAI,Azure openAI,Baidu Qianfan, Baichuan,Tongyi Qwen, DeepSeek这些。 
-
-> 推荐使用Moonshot。 
->
-> 会陆续添加市面上其他流行的大模型。
-
-![image-20240612140227679](https://flydean-1301049335.cos.ap-guangzhou.myqcloud.com/img/202406121402690.png)
-
-
-
-Moonshot API获取地址： https://platform.moonshot.cn/ 
-
-baidu qianfan API获取地址：https://cloud.baidu.com/doc/WENXINWORKSHOP/s/yloieb01t
-
-baichuan API获取地址： https://platform.baichuan-ai.com/ 
-
-阿里tongyi qwen API获取地址： https://help.aliyun.com/document_detail/611472.html?spm=a2c4g.2399481.0.0
-
-DeepSeek API获取地址: https://www.deepseek.com/
-
-## 1. AI视频
-
-基本配置设置完毕之后。就可以进入到AI视频了。 
-
-### 生成视频文案
-
-首先，我们给一个关键词，然后用大模型生成视频文案：
-
-
-
-![image-20240612140441201](https://flydean-1301049335.cos.ap-guangzhou.myqcloud.com/img/202406121404609.png)
-
-
-
-可以选择视频的文案语言，视频时长。
-
-如果大家对视频文案和关键词不满意的话，可以手动修改。
-
-### 视频配音和背景音乐
-
-![image-20240612140547283](https://flydean-1301049335.cos.ap-guangzhou.myqcloud.com/img/202406121405554.png)
-
-可以选择配音的语言和配音的语音。
-
-还支持配音语速调节。
-
-> 后续会支持语音试听功能。
-
-背景音乐放在项目的bgmusic文件夹中。
-
-目前里面只有两个背景音乐。大家可以自行添加自己需要的背景应用。
-
-### 视频配置
-
-视频配置区，大家可以选择视频的布局，视频帧率，视频尺寸。
-
-视频片段最小长度和最大长度。
-
-还可以开启视频转场效果。目前支持30+转场效果。
-
-![image-20240612140830765](https://flydean-1301049335.cos.ap-guangzhou.myqcloud.com/img/202406121408177.png)
-
-> 后续会添加使用本地视频资源功能。
-
-### 字幕配置
-
-字幕文件位于项目根目录的fonts文件夹。
-
-目前支持宋体和苹方两个字体集合。
-
-![image-20240612141000542](https://flydean-1301049335.cos.ap-guangzhou.myqcloud.com/img/202406121410773.png)
-
-可以选择字幕位置，字幕颜色，字幕边框颜色和字幕边框宽度。
-
-### 生成视频
-
-最后，就可以点击生成视频生成视频了。
-
-会在页面上列出具体的步骤名称和进度。
-
-![image-20240612141446057](https://flydean-1301049335.cos.ap-guangzhou.myqcloud.com/img/202406121414629.png)
-
-生成视频完成后，视频会显示在最下方，大家直接可以播放观看效果。
-
-![image-20240612141532280](https://flydean-1301049335.cos.ap-guangzhou.myqcloud.com/img/202406121415214.png)
-
-
-
-
-
-## 2. 批量视频混剪
-
-启动项目之后，左上角可以找到视频混剪区。
-
-点击它，进入到视频批量混剪工具页面。
-
-在视频混剪区，我们最多可以配置5个视频片段。
-
-你可以通过点击添加片段或者删除片段来控制片段区域的多少。
-
-
-
-![image-20240628093854842](https://flydean-1301049335.cos.ap-guangzhou.myqcloud.com/img/202406280938023.png)
-
-
-
-### 什么是视频片段？
-
-那么有朋友会问了，什么是视频片段呢？
-
-一个长视频，里面不可能只有一个视频主题，可能你的视频前半部分讲的是衣服的版型，后半部分讲的是衣服的材质。
-
-那么衣服的版型就是片段1，材质就是片段2。
-
-我们要做的就是收集衣服版型的素材，可以是mp4视频，也可以是jpg，png等图片资源。分辨率尽量大一点，否则后面生成的视频质量就不太好。
-
-然后把衣服版型的素材放到视频片段1的资源目录中。
-
-比如上图的资源目录中：
-
+#### 1. 本地调试
 ```bash
-d:\downloads\work\scen1
+# 启用调试模式
+export STREAMLIT_DEBUG=true
+streamlit run gui.py --logger.level=debug
 ```
 
-同样的，我们把衣服的材质的素材放到视频片段2的资源目录中。
-
-如下所示：
-
-
-
-![image-20240628094702252](https://flydean-1301049335.cos.ap-guangzhou.myqcloud.com/img/202406280947354.png)
-
-
-
-什么是视频资源文案呢？
-
-视频资源文案就是你需要给这段视频片段配的文字描述。
-
-你可以为一个片段准备很多条文案，然后把这些文案放在一个txt文件中。一条文案放在txt文件中的一行。
-
-系统会随机从txt文件中挑选一行最为最终视频片段的文字描述。
-
-下面是一个文案文件的例子：
-
-```txt
-精准的剪裁，流畅的线条，这款马甲的版型设计，完美贴合身形，无论是宽松还是修身，都能展现你的优雅姿态。
-我们的设计师们，将经典与现代完美融合。每一道线条，每一个剪裁，都是为了展现你的独特身形。
-每一刀剪裁，都经过精心计算，只为打造最适合你身形的版型。从肩部线条到腰部剪裁，每一处都彰显着你的独特风格。
-精准的剪裁，流畅的线条，这款马甲的版型设计，旨在让每一位穿着者都能感受到定制般的贴合。
-精准剪裁流畅线条，马甲版型设计完美贴合身形，宽松或修身皆展现优雅姿态。
-设计师将经典与现代融合，每道线条每个剪裁展现独特身形。
-精心计算每一刀剪裁，打造适合身形的版型，肩部线条至腰部剪裁彰显独特风格。
-剪裁精准流畅，马甲版型旨在定制般贴合，展现穿着者个性魅力。
-面料精选剪裁精致，马甲版型以优雅线条展现身形，正式或休闲皆完美。
-人体工学设计，马甲版型舒适透气，优雅线条展现身形，每次穿搭成焦点。
-经典版型现代演绎，马甲独特剪裁设计，穿着成展现个性品味舞台。
-细节精心打磨，马甲版型合体剪裁优雅设计，任何场合自信满满。
-舒适型格并存，马甲版型精致剪裁舒适面料，工作休闲展现最佳状态。
-时尚马甲版型多样，每款为你而生，经典剪裁现代设计，轻松驾驭各种风格。
-优雅线条修身设计，马甲版型考究剪裁精致细节，任何场合成焦点，彰显个人风格。
-```
-
-配置好的你的视频片段跟视频文案。
-
-### 视频配音区
-
-在视频配音区可以选择配音语言和对应的配音语言，目前支持100+配音语言。
-
-还可以选择不同的配音语速，以支持不同使用场景。
-
-![image-20240616220840076](https://flydean-1301049335.cos.ap-guangzhou.myqcloud.com/img/202406162208006.png)
-
-如果你对配音不太确定，可以点击试听声音试听对应的配音语音。
-
-
-
-### 背景音乐
-
-背景音乐放在项目下的bgmusic目录下面，你可以自行添加背景音乐文件到该文件夹下面。
-
-![image-20240616221041774](https://flydean-1301049335.cos.ap-guangzhou.myqcloud.com/img/202406162210686.png)
-
-可以选择是否开启背景音乐，和默认的背景音乐音量。
-
-### 视频配置区
-
-视频配置区可以选择视频布局：竖屏，横屏或者方形。
-
-可以选择视频帧率，视频的尺寸。
-
-还可以选择每个视频片段的最小长度和最大长度。
-
-最最重要的，还可以开启视频转场特效。目前支持30+视频转场特效。
-
-![image-20240616221116997](https://flydean-1301049335.cos.ap-guangzhou.myqcloud.com/img/202406162211618.png)
-
-
-
-### 字幕配置
-
-如果你需要字幕，那么可以点击开启字幕选项，可以设置字幕字体，字幕字体的大小和字幕颜色等。
-
-如果你不知道怎么设置，选择默认即可。
-
-![image-20240616221242812](https://flydean-1301049335.cos.ap-guangzhou.myqcloud.com/img/202406162212891.png)
-
-
-
-### 最后的视频生成
-
-目前系统支持一次批量生成100个视频，根据你自己的需要自行调整。
-
-![image-20240628095137565](https://flydean-1301049335.cos.ap-guangzhou.myqcloud.com/img/202406280951343.png)
-
-最后点击生成视频按钮即可生成视频。
-
-页面会有相应的进度提醒。
-
-![image-20240616221712173](https://flydean-1301049335.cos.ap-guangzhou.myqcloud.com/img/202406162217977.png)
-
-最后生成的视频会展示在页面最下面，大家可以自行播放。
-
-如果你生成了多个视频，可以在项目文件夹的final目录中找到你批量生成的视频。
-
-
-
-## 3. 批量短视频上传
-
-### 工作原理
-
-自动发布工具的本质上是基于selenium这个自动化框架实现的。
-
-通过模拟人工的点击操作，可以完成绝大多数需要人手工才能完成的工作。解放大家的双手。
-
-另外这个自动化的实现方式有两种，一种是在运行程序的过程中启动一个浏览器。另外一种是依附到现有的浏览器上来操作现有浏览器的页面。
-
-本工具选择的是依附到现有的浏览器上。
-
-主要是因为有些视频平台需要用手机扫码二维码才能登录。所以在程序中很难模拟这种登录的过程。
-
-### 前提条件
-
-目前自动发布支持chrome和firfox两种浏览器。大家根据需要自行选择一种即可。
-
-#### 1. chrome配置
-
-现在的主流浏览器肯定是chrome无疑了。所以我们首先聊一聊如何实现对chrome浏览器的支持。
-
-1. 首先你需要下载安装[Chrome](https://www.google.com/chrome/)，记住你的版本号，你可以从chrome官网上下载chrome，也可以从这个页面去下载 [ChromeDriver下载页面](https://googlechromelabs.github.io/chrome-for-testing/)。
-
-2. 你需要从[ChromeDriver下载页面](https://googlechromelabs.github.io/chrome-for-testing/)下载与你的Chrome浏览器版本相对应的ChromeDriver。确保你下载的是与你的操作系统和Chrome版本相匹配的版本。
-
-下载完毕之后，把chromeDriver解压到本地目录，目录的路径最好不要带中文。不能保证能正常运行。
-
-3. chrome 以debug模式启动
-
-如果是mac电脑，那么可以先给chrome设置一个alias
-
+#### 2. 日志查看
 ```bash
-alias chrome="/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome"
+# 查看应用日志
+tail -f ~/.streamlit/logs/streamlit.log
+
+# 查看FFmpeg执行日志
+ffmpeg -loglevel debug [命令]
 ```
 
-以debug模式启动chrome。
+#### 3. 浏览器开发者工具
+- 打开浏览器DevTools (F12)
+- 查看Network面板监控API调用
+- 查看Console面板查看JavaScript错误
 
+### 测试验证
+
+#### 1. 单元测试
 ```bash
-chrome --remote-debugging-port=9222
+# 运行基础功能测试
+python -m pytest tests/ -v
+
+# 测试LLM服务
+python -c "from services.llm.llm_service import *; # 测试代码"
+
+# 测试音频服务
+python main.py  # 执行main_try_test_audio()
 ```
 
-如果你是windows，可以在chrome的桌面快捷方式，右键目标中添加：
+#### 2. 功能测试
 
-```txt
---remote-debugging-port=9222
+**视频生成测试**:
+1. 启动应用界面
+2. 进入"自动短视频生成器"页面
+3. 输入测试主题: "人工智能的发展"
+4. 依次执行: 生成内容 → 获取资源 → 生成配音 → 生成视频
+5. 验证输出目录是否有视频文件生成
+
+**混剪功能测试**:
+1. 进入"视频批量混剪工具"页面
+2. 配置素材目录和文案文件
+3. 执行批量生成
+4. 检查输出视频质量和数量
+
+**发布功能测试**:
+1. 配置浏览器调试模式
+2. 进入"批量短视频上传工具"页面
+3. 执行环境检测
+4. 测试单个视频发布
+
+#### 3. 性能测试
+
+**内存使用监控**:
+```bash
+# 使用psutil监控内存
+python -c "
+import psutil
+import os
+process = psutil.Process(os.getpid())
+print(f'内存使用: {process.memory_info().rss / 1024 / 1024:.2f} MB')
+"
 ```
 
-
-
-![image-20240710103643535](https://flydean-1301049335.cos.ap-guangzhou.myqcloud.com/img/202407101036374.png)
-
-然后双击即可以debug模式打开chrome。
-
-#### 2. firefox配置
-
-除了chrome之外，用的最多的应该就是firefox了。
-
-所以我们也提供了对firefox的支持。
-
-
-
-要想使用firefox，你需要下面几步：
-
-1. 下载并安装 [Firefox](https://www.mozilla.org/en-US/firefox/new/)。
-
-2. 下载[**geckodriver**](https://github.com/mozilla/geckodriver/releases) 驱动.下载与你的Firefox浏览器版本相对应的geckodriver。确保你下载的是与你的操作系统和Firefox版本相匹配的版本。
-
-   下载完毕之后，把geckodriver解压到本地目录，目录的路径最好不要带中文。不能保证能正常运行。
-
-3. 以debug模式启动firefox:
-
-   和chrome类似，我们在firefox的启动命令之后加上： ` -marionette -start-debugger-server 2828`
-
-![image-20240504120509315](https://flydean-1301049335.cos.ap-guangzhou.myqcloud.com/img/202405041205192.png)
-
-> 注意，这里的端口一定要是2828,不能自定义。
-
-这时候你如果打开firefox,就会看到导航栏变成了红色，表示你已经启动了远程调试模式。
-
-![image-20240504120607831](https://flydean-1301049335.cos.ap-guangzhou.myqcloud.com/img/202405041206516.png)
-
-输入`about:config`
-
-可以看到marionette.port的端口就是2828。
-
-### 开始使用
-
-windows环境下，直接双击start.bat即可启动。
-
-
-
-mac环境下，在项目根目录下面执行sh start.sh即可。
-
-
-
-浏览器会自动打开MoneyPrinterPlus的首页。
-
-![image-20240710104233733](https://flydean-1301049335.cos.ap-guangzhou.myqcloud.com/img/202407101042103.png)
-
-点击左边的视频自动发布工具，可以看到视频自动发布工具的页面。
-
-你可以选择驱动类型。chrome还是firefox。
-
-驱动位置就是之前下载的chromedirver或者geckodriver的位置。
-
-视频内容所在目录，就是你想要发布的视频目录。
-
-当你修改视频目录之后，会自动列出视频目录里面的视频文件和文本文件。
-
-其中视频文件就是你要发布的视频内容。
-
-文本文件是什么呢？
-
-文本文件是和视频配套的文字内容。
-
-举个例子， 我想要发布一个关于唐诗的视频到网站上，那么对应的文本文件内容如下：
-
-
-
-```txt
-王维：酬郭给事
-洞门高阁霭馀辉，桃李阴阴柳絮飞。
-禁里疏钟官舍晚，省中啼鸟吏人稀。
-晨摇玉佩趋金殿，夕奉天书拜琐闱。
-强欲从君无那老，将因卧病解朝衣。
+**视频生成耗时统计**:
+```python
+import time
+start_time = time.time()
+# 执行视频生成流程
+end_time = time.time()
+print(f"生成耗时: {end_time - start_time:.2f} 秒")
 ```
 
-> 大家记住，第一行一定是视频的标题。
->
-> 其他行的内容，大家自由决定。
+### 常见问题排查
 
-然后我们看下面的页面：
+#### 1. FFmpeg相关问题
+```bash
+# 检查FFmpeg安装
+ffmpeg -version
 
-![image-20240710104725552](https://flydean-1301049335.cos.ap-guangzhou.myqcloud.com/img/202407101047908.png)
+# 测试视频处理
+ffmpeg -i input.mp4 -vf scale=720:1280 output.mp4
+```
 
-视频网站配置应该很直白了，上过幼儿园的朋友应该都能懂。
+#### 2. API配置问题
+```bash
+# 测试OpenAI API连接
+python -c "
+import openai
+openai.api_key = 'your-api-key'
+response = openai.ChatCompletion.create(
+    model='gpt-3.5-turbo',
+    messages=[{'role': 'user', 'content': 'Hello'}]
+)
+print(response)
+"
+```
 
-标题前缀：如果你需要额外给视频标题添加一些前缀，可以在这里设置。
+#### 3. 浏览器自动化问题
+```bash
+# 检查ChromeDriver版本匹配
+chromedriver --version
+google-chrome --version
 
-合集名称：有些视频网站需要选择合集。这里就是合集的名字。（程序不会帮你创建合集，你需要自己提前在网站上创建。）
+# 测试Selenium连接
+python -c "
+from selenium import webdriver
+driver = webdriver.Chrome()
+driver.get('https://www.baidu.com')
+print('浏览器启动成功')
+driver.quit()
+"
+```
 
-视频标签：很好理解了，就是标签，用空格分割。
+## 配置说明
 
-快手还有一个额外的领域配置。
+### 配置文件结构
 
-你可以选择是否开启抖音，快手，视频号或者小红书。
+```yaml
+# config.yml
+ui:
+  language: "zh-CN"
 
-#### 环境检测
+llm:
+  provider: "openai"
+  openai:
+    api_key: "your-api-key"
+    base_url: "https://api.openai.com/v1"
+    model_name: "gpt-3.5-turbo"
 
-接下来就可以准备发布视频了。
+audio:
+  provider: "azure"
+  azure:
+    speech_key: "your-speech-key"
+    service_region: "eastus"
+  local_tts:
+    provider: "chatTTS"
+    chatTTS:
+      server_location: "http://localhost:8080"
 
-但是在发布之前，你可以点一下环境检测。
+resource:
+  provider: "pexels"
+  pexels:
+    api_key: "your-pexels-key"
 
-如果自动打开了我的主页，那么就说明你的环境配置是没问题的。接下来就可以发布视频了。
+publisher:
+  driver_location: "/path/to/chromedriver"
+  content_location: "/path/to/videos"
+  auto_publish: true
+```
 
-#### 发布视频
+### 配置项说明
 
-因为所有的视频网站都需要登录。所以在点击发布视频按钮之前，你需要打开对应的网站，登录你的账号先。
+#### LLM配置
+- **provider**: 选择使用的LLM提供商
+- **api_key**: API密钥
+- **base_url**: API基础URL (可选)
+- **model_name**: 模型名称
 
-如果你的账号都登录完毕了，点击发布视频按钮吧。
+#### 音频配置
+- **provider**: 语音服务提供商 (azure/ali/tencent)
+- **speech_key**: 语音服务密钥
+- **service_region**: 服务区域
+- **local_tts**: 本地TTS配置
 
-开启你的自由之旅。
+#### 资源配置
+- **provider**: 资源提供商 (pexels/pixabay)
+- **api_key**: 资源API密钥
 
-运行的界面大概如下：
+#### 发布配置
+- **driver_location**: 浏览器驱动路径
+- **content_location**: 视频内容目录
+- **auto_publish**: 是否自动发布
 
-![image-20240710105336580](https://flydean-1301049335.cos.ap-guangzhou.myqcloud.com/img/202407101053683.png)
+## 使用教程
 
+### 快速开始
 
-# 关于版权
+#### 1. 基础配置
+1. 启动应用: `streamlit run gui.py`
+2. 进入"基本配置信息"页面
+3. 配置LLM服务 (推荐使用Moonshot)
+4. 配置语音服务 (推荐使用Azure)
+5. 配置资源服务 (推荐使用Pexels)
 
-版权所有©[2024]程序那些事
+#### 2. 生成第一个视频
+1. 进入"自动短视频生成器"
+2. 输入主题: "介绍人工智能的发展历程"
+3. 选择视频语言: 中文
+4. 设置视频时长: 120字以内
+5. 点击"生成视频内容"
+6. 依次执行后续步骤
+7. 等待视频生成完成
 
-版权所有。本软件及相关文档文件(“软件”)仅供个人和教育用途。除非获得作者的明确许可，否则严禁将本软件用于商业用途。
+#### 3. 批量混剪视频
+1. 准备素材目录和文案文件
+2. 进入"视频批量混剪工具"
+3. 配置场景资源路径
+4. 设置配音和视频参数
+5. 执行批量生成
 
-在满足以下条件的情况下，特此允许任何人出于非商业目的使用、复制和修改本软件:
+#### 4. 自动发布视频
+1. 配置浏览器调试模式
+2. 进入"批量短视频上传工具"
+3. 选择目标平台
+4. 配置发布参数
+5. 执行环境检测
+6. 开始自动发布
 
-1. 原始版权声明和本许可声明必须包含在本软件的所有副本或主要部分中。
-2. 修改(如有)必须保留原始版权信息，不得暗示修改后的版本是本软件的正式版本。
-3. 本软件的任何分发或其修改必须保留原始版权声明，并包括本许可声明。
+### 高级用法
 
-对于商业用途，包括但不限于销售、分发或使用本软件作为任何商业产品或服务的一部分，您必须获得作者的明确授权。
+#### 自定义语音模型
+1. 配置本地TTS服务 (ChatTTS/GPT-SoVITS/CosyVoice)
+2. 设置服务器地址和参数
+3. 测试语音生成效果
 
-本软件虽然是开源的，但是开源协议是基于GPL-3.0 license。 任何人不得以本软件为基础进行商业使用。
+#### 视频特效配置
+1. 选择转场效果类型
+2. 调整视频参数 (分辨率、帧率、时长)
+3. 配置字幕样式和位置
 
-最近有发现部分人改一改我的代码，把作者名字删除就打包拿出去卖。 这里保留追究的权利。
+#### 多平台发布策略
+1. 配置多个平台的发布参数
+2. 设置发布时间间隔
+3. 批量选择目标平台
 
-开源不易，希望大家珍惜!
+## 开发指南
 
+### 项目结构规范
 
+#### 目录结构
+```
+services/[模块名]/
+├── __init__.py
+├── [模块]_service.py      # 主要服务类
+├── [子模块]_service.py    # 子服务类
+└── README.md             # 模块说明文档
+```
 
-# 常见问题和解决方案
+#### 编码规范
+- 使用PEP 8代码风格
+- 类名使用CamelCase
+- 函数名使用snake_case
+- 添加详细的文档字符串
 
-遇到问题的朋友，可以先看看这里的问题汇总，看看能不能解决问题先。
+#### 错误处理
+```python
+try:
+    # 业务逻辑
+    result = process_data(data)
+except SpecificException as e:
+    logger.error(f"处理失败: {e}")
+    raise BusinessException("业务处理失败") from e
+except Exception as e:
+    logger.error(f"未知错误: {e}")
+    raise SystemException("系统错误") from e
+```
 
-[常见问题汇总](issue.md)
+### 扩展开发
 
-# 讨论组
+#### 添加新的LLM提供商
+1. 在`services/llm/`创建新的服务类
+2. 继承`MyLLMService`抽象类
+3. 实现`generate_content`方法
+4. 在工厂函数中注册新的提供商
 
-如果大家有什么问题或者想法，欢迎入群讨论。觉得项目不错的朋友可以请作者喝个茶,或者加作者好友私人订制。
+#### 添加新的发布平台
+1. 在`services/publisher/`创建新的发布器
+2. 实现平台特定的发布逻辑
+3. 在配置中添加平台选项
+4. 更新UI界面
 
+#### 自定义视频特效
+1. 扩展`services/video/texiao_service.py`
+2. 添加新的特效处理函数
+3. 在配置中添加特效选项
+4. 更新视频合成流程
 
+### 部署指南
 
+#### Docker部署
+```dockerfile
+FROM python:3.11-slim
 
+WORKDIR /app
+COPY requirements.txt .
+RUN pip install -r requirements.txt
 
+COPY . .
+EXPOSE 8501
 
+CMD ["streamlit", "run", "gui.py", "--server.port=8501", "--server.address=0.0.0.0"]
+```
 
-<table>
-  <thead>
-    <tr>
-  <th>交流群</th>
-  <th>我的微信</th>
-  </tr>
-</thead>
-<tr>
-<td align="center"><img  src="https://flydean-1301049335.cos.ap-guangzhou.myqcloud.com/img/202411162101069.png"></img></td>
-<td align="center"><img  src="https://flydean-1301049335.cos.ap-guangzhou.myqcloud.com/img/202408021732303.png"></img></td>
-</tr>
-</table>
+#### 生产环境配置
+```bash
+# 设置环境变量
+export STREAMLIT_SERVER_HEADLESS=true
+export STREAMLIT_SERVER_PORT=8501
+export STREAMLIT_SERVER_ADDRESS=0.0.0.0
 
+# 使用反向代理
+nginx.conf:
+server {
+    listen 80;
+    location / {
+        proxy_pass http://localhost:8501;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+    }
+}
+```
 
+## 总结
 
+MoneyPrinterPlus是一个功能强大、架构清晰的AI短视频生成平台。通过模块化的设计和丰富的功能扩展，该项目为开发者提供了一个优秀的学习和实践平台。
 
+### 项目优势
+- **技术栈现代化**: 使用最新的AI技术和Web框架
+- **架构设计合理**: 采用经典的设计模式和分层架构
+- **功能丰富全面**: 覆盖视频生成全流程
+- **社区活跃**: 有完整的文档和社区支持
 
+### 学习建议
+1. **循序渐进**: 从基础配置开始，逐步深入各个模块
+2. **动手实践**: 多做实验，理解每个功能的工作原理
+3. **扩展开发**: 在理解基础上尝试添加新的功能
+4. **性能优化**: 学习如何优化视频生成和发布的效率
 
+这个项目不仅是一个实用的工具，更是学习全栈开发、AI应用、自动化测试等多个领域知识的优秀案例。
 
+---
 
-
+**作者**: 程序那些事
+**邮箱**: flydean@163.com
+**项目地址**: https://github.com/ddean2009/MoneyPrinterPlus
