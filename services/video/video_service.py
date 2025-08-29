@@ -62,9 +62,16 @@ def get_audio_duration(audio_file):
     :return: 音频时长（秒），如果失败则返回None
     """
     # 使用ffmpeg命令获取音频信息
+    if not os.path.exists(audio_file):
+        print(f"[get_audio_duration] 音频文件不存在: {audio_file}")
+        return None
     cmd = ['ffmpeg', '-i', audio_file]
     print(" ".join(cmd))
-    result = subprocess.run(cmd, capture_output=True)
+    try:
+        result = subprocess.run(cmd, capture_output=True)
+    except FileNotFoundError:
+        print('[get_audio_duration] 未找到 ffmpeg, 请确认已安装并加入 PATH')
+        return None
 
     # 解析输出，找到时长信息
     duration_search = re.search(

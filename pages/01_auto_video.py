@@ -377,11 +377,26 @@ with bg_music_container:
     with llm_columns[1]:
         nest_columns = st.columns(3)
         with nest_columns[0]:
-            st.checkbox(label=tr("Enable background music"), key="enable_background_music", value=True)
+            # 默认不勾选背景音乐
+            st.checkbox(label=tr("Enable background music"), key="enable_background_music", value=False)
         with nest_columns[1]:
             bg_music_list = get_file_map_from_dir(st.session_state["background_music_dir"], ".mp3,.wav")
+            enable_bgm = st.session_state.get("enable_background_music", False)
+            # 当用户首次勾选且还没有选中过背景音乐时，自动选中列表中的第一个
+            if enable_bgm and bg_music_list and not st.session_state.get("background_music"):
+                first_key = next(iter(bg_music_list.keys()))
+                st.session_state["background_music"] = first_key
+            # 构造 options 列表（dict 的 key 顺序即可）
+            options_keys = list(bg_music_list.keys())
+            current_selection = st.session_state.get("background_music")
+            if current_selection not in options_keys and options_keys:
+                current_selection = options_keys[0] if enable_bgm else None
+                if enable_bgm:
+                    st.session_state["background_music"] = current_selection
             st.selectbox(label=tr("Background music"), key="background_music",
-                         options=bg_music_list, format_func=lambda x: bg_music_list[x])
+                         options=options_keys,
+                         format_func=lambda x: bg_music_list[x],
+                         disabled=not enable_bgm)
         with nest_columns[2]:
             st.slider(label=tr("Background music volume"), min_value=0.0, value=0.3, max_value=1.0, step=0.1,
                       key="background_music_volume")

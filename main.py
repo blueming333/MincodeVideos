@@ -218,8 +218,16 @@ def main_generate_video_dubbing():
         if selected_local_audio_tts_provider == "CosyVoice":
             audio_service = CosyVoiceAudioService()
         audio_service.chat_with_content(video_content, audio_output_file)
+    # 校验TTS输出是否成功 (使用模块顶部已导入的 os)
+    if (not os.path.exists(audio_output_file)) or os.path.getsize(audio_output_file) == 0:
+        st.error("配音生成失败，文件不存在或为空。请检查：1) 阿里TTS密钥/权限；2) 文本长度是否超过限制；3) 网络连通性；4) ffmpeg 是否安装。")
+        print(f"[main_generate_video_dubbing] 语音文件无效: {audio_output_file}")
+        return
     # 语音扩展2秒钟,防止突然结束很突兀
-    extent_audio(audio_output_file, 2)
+    try:
+        extent_audio(audio_output_file, 2)
+    except Exception as e:
+        print('[main_generate_video_dubbing] extent_audio 执行异常:', e)
     print("main_generate_video_dubbing end")
 
 
