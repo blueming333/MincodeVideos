@@ -45,7 +45,7 @@ with toolbar:
 videos = get_video_files_info()
 
 if not videos:
-    st.info("📭 暂无视频。请先在 \`自动短视频生成器\` 页面生成视频。")
+    st.info("📭 暂无视频。请先在 `自动短视频生成器` 页面生成视频。")
 else:
     # 汇总信息
     total_size = format_file_size(sum(v['size'] for v in videos))

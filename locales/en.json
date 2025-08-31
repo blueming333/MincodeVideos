@@ -1,4 +1,9 @@
 {
+  "Base Config": "Base Config",
+  "Generate Video" : "Generate Video",
+  "Mix Video": "Mix Video",
+  "Material Search": "Material Search",
+  
   "Video Subject": "Video Subject (comma separated)",
   "Please input video subject, then click the generate button to generate the video content": "Please input your video subject, then click the generate button to generate the video content",
   "Please input video subject" : "Please input video subject",
