@@ -1,0 +1,237 @@
+{% extends "base.html" %}
+
+{% block title %}首页 - MincodeVideos{% endblock %}
+
+{% block content %}
+<div x-data="homePage()">
+    <!-- 欢迎横幅 -->
+    <div class="row mb-5">
+        <div class="col-12">
+            <div class="bg-gradient text-white p-5 rounded-4" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                <div class="row align-items-center">
+                    <div class="col-lg-8">
+                        <h1 class="display-4 fw-bold mb-3">
+                            <i class="bi bi-robot me-3"></i>
+                            MincodeVideos
+                        </h1>
+                        <p class="lead mb-4">基于AI技术的全栈短视频生成和发布工具</p>
+                        <p class="mb-4">一键生成高质量短视频内容，支持批量自动发布到抖音、快手、小红书等主流平台</p>
+                        <div class="d-flex gap-3">
+                            <a href="{{ url_for('video.generate') }}" class="btn btn-light btn-lg px-4">
+                                <i class="bi bi-play-circle-fill me-2"></i>
+                                开始创作
+                            </a>
+                            <a href="{{ url_for('config.index') }}" class="btn btn-outline-light btn-lg px-4">
+                                <i class="bi bi-gear-fill me-2"></i>
+                                系统配置
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 text-center">
+                        <div class="position-relative">
+                            <i class="bi bi-camera-video" style="font-size: 8rem; opacity: 0.3;"></i>
+                            <div class="position-absolute top-50 start-50 translate-middle">
+                                <i class="bi bi-lightning-charge text-warning" style="font-size: 3rem;"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 功能特性卡片 -->
+    <div class="row mb-5">
+        <div class="col-12">
+            <h2 class="text-center mb-5 fw-bold">
+                <i class="bi bi-stars text-warning me-2"></i>
+                核心功能特性
+            </h2>
+        </div>
+        
+        <div class="col-lg-4 col-md-6 mb-4">
+            <div class="feature-card h-100 text-center">
+                <div class="feature-icon bg-primary bg-opacity-10 text-primary mx-auto">
+                    <i class="bi bi-camera-video-fill"></i>
+                </div>
+                <h5 class="fw-bold mb-3">AI视频生成</h5>
+                <p class="text-muted">使用大语言模型自动生成视频脚本，配合AI配音和素材，一键生成高质量短视频</p>
+                <a href="{{ url_for('video.generate') }}" class="btn btn-outline-primary">
+                    立即体验 <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+        
+        <div class="col-lg-4 col-md-6 mb-4">
+            <div class="feature-card h-100 text-center">
+                <div class="feature-icon bg-success bg-opacity-10 text-success mx-auto">
+                    <i class="bi bi-scissors"></i>
+                </div>
+                <h5 class="fw-bold mb-3">智能混剪</h5>
+                <p class="text-muted">批量视频混剪，支持自动转场特效，快速生成大量不重复的短视频内容</p>
+                <a href="{{ url_for('mix.batch') }}" class="btn btn-outline-success">
+                    开始混剪 <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+        
+        <div class="col-lg-4 col-md-6 mb-4">
+            <div class="feature-card h-100 text-center">
+                <div class="feature-icon bg-info bg-opacity-10 text-info mx-auto">
+                    <i class="bi bi-cloud-upload-fill"></i>
+                </div>
+                <h5 class="fw-bold mb-3">自动发布</h5>
+                <p class="text-muted">一键发布到抖音、快手、小红书、视频号等平台，支持批量操作和定时发布</p>
+                <a href="{{ url_for('publish.batch') }}" class="btn btn-outline-info">
+                    配置发布 <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+        
+        <div class="col-lg-4 col-md-6 mb-4">
+            <div class="feature-card h-100 text-center">
+                <div class="feature-icon bg-warning bg-opacity-10 text-warning mx-auto">
+                    <i class="bi bi-mic-fill"></i>
+                </div>
+                <h5 class="fw-bold mb-3">多语音服务</h5>
+                <p class="text-muted">集成Azure、阿里云、腾讯云语音服务，支持ChatTTS、GPT-SoVITS等本地TTS</p>
+                <a href="{{ url_for('config.audio') }}" class="btn btn-outline-warning">
+                    语音配置 <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+        
+        <div class="col-lg-4 col-md-6 mb-4">
+            <div class="feature-card h-100 text-center">
+                <div class="feature-icon bg-purple bg-opacity-10 text-purple mx-auto" style="color: #8b5cf6 !important;">
+                    <i class="bi bi-grid-3x3-gap-fill"></i>
+                </div>
+                <h5 class="fw-bold mb-3">作品管理</h5>
+                <p class="text-muted">现代化的视频作品展示界面，支持预览、下载、批量管理等功能</p>
+                <a href="{{ url_for('gallery.index') }}" class="btn btn-outline-secondary">
+                    查看作品 <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+        
+        <div class="col-lg-4 col-md-6 mb-4">
+            <div class="feature-card h-100 text-center">
+                <div class="feature-icon bg-danger bg-opacity-10 text-danger mx-auto">
+                    <i class="bi bi-gear-fill"></i>
+                </div>
+                <h5 class="fw-bold mb-3">灵活配置</h5>
+                <p class="text-muted">支持多种AI模型和服务商，配置简单，一次设置终身使用</p>
+                <a href="{{ url_for('config.index') }}" class="btn btn-outline-danger">
+                    系统设置 <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 工作流程 -->
+    <div class="row mb-5">
+        <div class="col-12">
+            <h2 class="text-center mb-5 fw-bold">
+                <i class="bi bi-diagram-3 text-info me-2"></i>
+                简单三步，轻松搞定
+            </h2>
+            
+            <div class="row justify-content-center">
+                <div class="col-lg-10">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <div class="text-center">
+                            <div class="step-circle bg-primary text-white rounded-circle d-flex align-items-center justify-content-center mx-auto mb-3" style="width: 80px; height: 80px; font-size: 2rem;">
+                                <i class="bi bi-1-circle"></i>
+                            </div>
+                            <h5 class="fw-bold">配置服务</h5>
+                            <p class="text-muted">配置LLM、语音、资源等服务</p>
+                        </div>
+                        
+                        <div class="flex-grow-1 mx-4">
+                            <div class="border-top border-3 border-primary" style="margin-top: 40px;"></div>
+                        </div>
+                        
+                        <div class="text-center">
+                            <div class="step-circle bg-success text-white rounded-circle d-flex align-items-center justify-content-center mx-auto mb-3" style="width: 80px; height: 80px; font-size: 2rem;">
+                                <i class="bi bi-2-circle"></i>
+                            </div>
+                            <h5 class="fw-bold">生成视频</h5>
+                            <p class="text-muted">输入主题，AI自动生成视频</p>
+                        </div>
+                        
+                        <div class="flex-grow-1 mx-4">
+                            <div class="border-top border-3 border-success" style="margin-top: 40px;"></div>
+                        </div>
+                        
+                        <div class="text-center">
+                            <div class="step-circle bg-info text-white rounded-circle d-flex align-items-center justify-content-center mx-auto mb-3" style="width: 80px; height: 80px; font-size: 2rem;">
+                                <i class="bi bi-3-circle"></i>
+                            </div>
+                            <h5 class="fw-bold">批量发布</h5>
+                            <p class="text-muted">一键发布到各大平台</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 快速开始 -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card border-0 bg-light">
+                <div class="card-body p-5 text-center">
+                    <h3 class="fw-bold mb-3">
+                        <i class="bi bi-rocket-takeoff text-primary me-2"></i>
+                        准备好开始了吗？
+                    </h3>
+                    <p class="lead text-muted mb-4">选择一个功能模块，开始您的AI短视频创作之旅</p>
+                    <div class="d-flex justify-content-center gap-3 flex-wrap">
+                        <a href="{{ url_for('video.generate') }}" class="btn btn-primary btn-lg">
+                            <i class="bi bi-camera-video-fill me-2"></i>
+                            生成视频
+                        </a>
+                        <a href="{{ url_for('mix.batch') }}" class="btn btn-success btn-lg">
+                            <i class="bi bi-scissors me-2"></i>
+                            视频混剪
+                        </a>
+                        <a href="{{ url_for('gallery.index') }}" class="btn btn-info btn-lg">
+                            <i class="bi bi-grid-3x3-gap-fill me-2"></i>
+                            查看作品
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function homePage() {
+    return {
+        // 页面数据
+        stats: {
+            totalVideos: 0,
+            todayGenerated: 0,
+            publishedCount: 0
+        },
+        
+        // 初始化
+        init() {
+            this.loadStats();
+        },
+        
+        // 加载统计数据
+        async loadStats() {
+            try {
+                // 这里可以调用API获取统计数据
+                // const response = await apiRequest('/api/stats');
+                // this.stats = response.data;
+            } catch (error) {
+                console.error('加载统计数据失败:', error);
+            }
+        }
+    }
+}
+</script>
+{% endblock %}

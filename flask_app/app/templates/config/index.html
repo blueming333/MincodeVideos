@@ -1,0 +1,546 @@
+{% extends "base.html" %}
+
+{% block title %}系统配置 - MincodeVideos{% endblock %}
+
+{% block content %}
+<div x-data="configPage()">
+    <!-- 页面标题 -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="h2 fw-bold text-primary">
+                <i class="bi bi-gear-fill me-2"></i>
+                系统配置
+            </h1>
+            <p class="text-muted">配置AI服务、语音服务、资源服务等核心功能</p>
+        </div>
+        <div>
+            <button class="btn btn-success" @click="saveAllConfig()">
+                <i class="bi bi-check-circle me-2"></i>
+                保存所有配置
+            </button>
+        </div>
+    </div>
+    
+    <!-- 配置导航选项卡 -->
+    <ul class="nav nav-pills nav-fill mb-4" id="configTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="basic-tab" data-bs-toggle="pill" data-bs-target="#basic" type="button" role="tab">
+                <i class="bi bi-house-gear me-2"></i>
+                基础设置
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="llm-tab" data-bs-toggle="pill" data-bs-target="#llm" type="button" role="tab">
+                <i class="bi bi-robot me-2"></i>
+                大语言模型
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="audio-tab" data-bs-toggle="pill" data-bs-target="#audio" type="button" role="tab">
+                <i class="bi bi-mic-fill me-2"></i>
+                语音服务
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="resource-tab" data-bs-toggle="pill" data-bs-target="#resource" type="button" role="tab">
+                <i class="bi bi-images me-2"></i>
+                资源服务
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="publisher-tab" data-bs-toggle="pill" data-bs-target="#publisher" type="button" role="tab">
+                <i class="bi bi-cloud-upload me-2"></i>
+                发布配置
+            </button>
+        </li>
+    </ul>
+    
+    <!-- 配置内容 -->
+    <div class="tab-content" id="configTabsContent">
+        <!-- 基础设置 -->
+        <div class="tab-pane fade show active" id="basic" role="tabpanel">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">
+                        <i class="bi bi-globe me-2"></i>
+                        语言和基础设置
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label class="form-label">界面语言</label>
+                            <select class="form-select" x-model="config.ui.language">
+                                <option value="zh-CN">简体中文</option>
+                                <option value="en">English</option>
+                                <option value="ja">日本語</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">测试模式</label>
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" x-model="config.test_mode">
+                                <label class="form-check-label">启用测试模式</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 大语言模型配置 -->
+        <div class="tab-pane fade" id="llm" role="tabpanel">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">
+                        <i class="bi bi-robot me-2"></i>
+                        大语言模型配置
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-3">
+                        <div class="col-12">
+                            <label class="form-label">选择LLM提供商</label>
+                            <select class="form-select" x-model="config.llm.provider">
+                                <option value="OpenAI">OpenAI</option>
+                                <option value="Moonshot">Moonshot</option>
+                                <option value="Azure">Azure OpenAI</option>
+                                <option value="Qianfan">百度千帆</option>
+                                <option value="Baichuan">百度文心一言</option>
+                                <option value="Tongyi">阿里通义千问</option>
+                                <option value="DeepSeek">DeepSeek</option>
+                                <option value="Ollama">Ollama (本地)</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <!-- 动态LLM配置表单 -->
+                    <div class="border rounded p-3 bg-light">
+                        <h6 class="fw-bold mb-3" x-text="config.llm.provider + ' 配置'"></h6>
+                        
+                        <div class="row" x-show="config.llm.provider !== 'Ollama'">
+                            <div class="col-md-6">
+                                <label class="form-label">API Key</label>
+                                <input type="password" class="form-control" 
+                                       x-model="config.llm[config.llm.provider]?.api_key"
+                                       placeholder="输入API密钥">
+                            </div>
+                            <div class="col-md-6" x-show="config.llm.provider === 'Qianfan'">
+                                <label class="form-label">Secret Key</label>
+                                <input type="password" class="form-control" 
+                                       x-model="config.llm[config.llm.provider]?.secret_key"
+                                       placeholder="输入Secret Key">
+                            </div>
+                        </div>
+                        
+                        <div class="row mt-3" x-show="['Azure', 'DeepSeek', 'Ollama'].includes(config.llm.provider)">
+                            <div class="col-md-6">
+                                <label class="form-label">Base URL</label>
+                                <input type="url" class="form-control" 
+                                       x-model="config.llm[config.llm.provider]?.base_url"
+                                       placeholder="输入API基础URL">
+                            </div>
+                        </div>
+                        
+                        <div class="row mt-3">
+                            <div class="col-md-6">
+                                <label class="form-label">模型名称</label>
+                                <input type="text" class="form-control" 
+                                       x-model="config.llm[config.llm.provider]?.model_name"
+                                       placeholder="输入模型名称">
+                            </div>
+                            <div class="col-md-6">
+                                <button class="btn btn-outline-primary mt-4" 
+                                        @click="testLLMConnection()" 
+                                        :disabled="testingConnection"
+                                        x-text="testingConnection ? '测试中...' : '测试连接'">
+                                    <i class="bi bi-wifi me-2" x-show="!testingConnection"></i>
+                                    <i class="bi bi-arrow-clockwise me-2" x-show="testingConnection"></i>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- 测试结果显示 -->
+                        <div x-show="testResult" class="mt-3">
+                            <div :class="testResult?.success ? 'alert alert-success' : 'alert alert-danger'" 
+                                 x-text="testResult?.message">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 语音服务配置 -->
+        <div class="tab-pane fade" id="audio" role="tabpanel">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">
+                        <i class="bi bi-mic-fill me-2"></i>
+                        语音服务配置
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <!-- 远程语音服务 -->
+                    <div class="mb-4">
+                        <h6 class="fw-bold mb-3">远程语音服务</h6>
+                        <div class="row mb-3">
+                            <div class="col-12">
+                                <label class="form-label">选择语音提供商</label>
+                                <select class="form-select" x-model="config.audio.provider">
+                                    <option value="Azure">Azure 语音服务</option>
+                                    <option value="Ali">阿里云语音</option>
+                                    <option value="Tencent">腾讯云语音</option>
+                                    <option value="MinMax">MinMax 语音</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <!-- Azure配置 -->
+                        <div x-show="config.audio.provider === 'Azure'" class="border rounded p-3 bg-light">
+                            <h6 class="fw-bold mb-3">Azure 语音服务配置</h6>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label class="form-label">Speech Key</label>
+                                    <input type="password" class="form-control" 
+                                           x-model="config.audio.Azure?.speech_key"
+                                           placeholder="输入Azure语音密钥">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Service Region</label>
+                                    <input type="text" class="form-control" 
+                                           x-model="config.audio.Azure?.service_region"
+                                           placeholder="如: eastus">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- MinMax配置 -->
+                        <div x-show="config.audio.provider === 'MinMax'" class="border rounded p-3 bg-light">
+                            <h6 class="fw-bold mb-3">MinMax 语音服务配置</h6>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label class="form-label">API Key</label>
+                                    <input type="password" class="form-control" 
+                                           x-model="config.audio.MinMax?.api_key"
+                                           placeholder="输入MinMax API密钥">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Group ID</label>
+                                    <input type="text" class="form-control" 
+                                           x-model="config.audio.MinMax?.group_id"
+                                           placeholder="输入Group ID">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 本地TTS服务 -->
+                    <div class="mb-4">
+                        <h6 class="fw-bold mb-3">本地TTS服务</h6>
+                        <div class="row mb-3">
+                            <div class="col-12">
+                                <label class="form-label">选择本地TTS提供商</label>
+                                <select class="form-select" x-model="config.audio.local_tts.provider">
+                                    <option value="chatTTS">ChatTTS</option>
+                                    <option value="GPTSoVITS">GPT-SoVITS</option>
+                                    <option value="CosyVoice">CosyVoice</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="border rounded p-3 bg-light">
+                            <div x-show="config.audio.local_tts.provider === 'chatTTS'">
+                                <label class="form-label">ChatTTS 服务器地址</label>
+                                <input type="url" class="form-control" 
+                                       x-model="config.audio.local_tts.chatTTS?.server_location"
+                                       placeholder="http://127.0.0.1:8080">
+                            </div>
+                            
+                            <div x-show="config.audio.local_tts.provider === 'GPTSoVITS'">
+                                <label class="form-label">GPT-SoVITS 服务器地址</label>
+                                <input type="url" class="form-control" 
+                                       x-model="config.audio.local_tts.GPTSoVITS?.server_location"
+                                       placeholder="http://127.0.0.1:9880">
+                            </div>
+                            
+                            <div x-show="config.audio.local_tts.provider === 'CosyVoice'">
+                                <label class="form-label">CosyVoice 服务器地址</label>
+                                <input type="url" class="form-control" 
+                                       x-model="config.audio.local_tts.CosyVoice?.server_location"
+                                       placeholder="http://127.0.0.1:50000">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 资源服务配置 -->
+        <div class="tab-pane fade" id="resource" role="tabpanel">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">
+                        <i class="bi bi-images me-2"></i>
+                        资源服务配置
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-3">
+                        <div class="col-12">
+                            <label class="form-label">选择资源提供商</label>
+                            <select class="form-select" x-model="config.resource.provider">
+                                <option value="pexels">Pexels (免费)</option>
+                                <option value="pixabay">Pixabay (免费)</option>
+                                <option value="stableDiffusion">Stable Diffusion (AI生成)</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="border rounded p-3 bg-light">
+                        <div x-show="config.resource.provider === 'pexels'">
+                            <label class="form-label">Pexels API Key</label>
+                            <input type="password" class="form-control" 
+                                   x-model="config.resource.pexels?.api_key"
+                                   placeholder="输入Pexels API密钥">
+                            <small class="form-text text-muted">
+                                在 <a href="https://www.pexels.com/api/" target="_blank">Pexels API</a> 申请免费API密钥
+                            </small>
+                        </div>
+                        
+                        <div x-show="config.resource.provider === 'pixabay'">
+                            <label class="form-label">Pixabay API Key</label>
+                            <input type="password" class="form-control" 
+                                   x-model="config.resource.pixabay?.api_key"
+                                   placeholder="输入Pixabay API密钥">
+                            <small class="form-text text-muted">
+                                在 <a href="https://pixabay.com/api/docs/" target="_blank">Pixabay API</a> 申请免费API密钥
+                            </small>
+                        </div>
+                        
+                        <div x-show="config.resource.provider === 'stableDiffusion'">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <label class="form-label">用户名</label>
+                                    <input type="text" class="form-control" 
+                                           x-model="config.resource.stableDiffusion?.user_name"
+                                           placeholder="输入用户名">
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label">密码</label>
+                                    <input type="password" class="form-control" 
+                                           x-model="config.resource.stableDiffusion?.password"
+                                           placeholder="输入密码">
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label">服务器地址</label>
+                                    <input type="url" class="form-control" 
+                                           x-model="config.resource.stableDiffusion?.server_address"
+                                           placeholder="http://127.0.0.1:7860">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 发布配置 -->
+        <div class="tab-pane fade" id="publisher" role="tabpanel">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">
+                        <i class="bi bi-cloud-upload me-2"></i>
+                        自动发布配置
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label">浏览器驱动类型</label>
+                            <select class="form-select" x-model="config.publisher.driver_type">
+                                <option value="chrome">Chrome</option>
+                                <option value="firefox">Firefox</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">驱动程序路径</label>
+                            <input type="text" class="form-control" 
+                                   x-model="config.publisher.driver_location"
+                                   placeholder="留空自动查找">
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label">视频文件目录</label>
+                            <input type="text" class="form-control" 
+                                   x-model="config.publisher.content_location"
+                                   placeholder="./final">
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-check form-switch mt-4">
+                                <input class="form-check-input" type="checkbox" 
+                                       x-model="config.publisher.auto_publish">
+                                <label class="form-check-label">启用自动发布</label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 平台配置 -->
+                    <h6 class="fw-bold mb-3">发布平台配置</h6>
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" 
+                                       x-model="config.publisher.douyin?.enable">
+                                <label class="form-check-label">抖音</label>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" 
+                                       x-model="config.publisher.kuaishou?.enable">
+                                <label class="form-check-label">快手</label>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" 
+                                       x-model="config.publisher.xiaohongshu?.enable">
+                                <label class="form-check-label">小红书</label>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" 
+                                       x-model="config.publisher.bilibili?.enable">
+                                <label class="form-check-label">B站</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 保存按钮 -->
+    <div class="text-center mt-4">
+        <button class="btn btn-success btn-lg px-5" @click="saveAllConfig()">
+            <i class="bi bi-check-circle me-2"></i>
+            保存所有配置
+        </button>
+    </div>
+</div>
+
+<script>
+function configPage() {
+    return {
+        config: {{ config_json|safe }},
+        testingConnection: false,
+        testResult: null,
+        
+        init() {
+            console.log('初始化配置页面，配置数据:', this.config);
+            // 确保所有必要的配置结构存在
+            this.ensureConfigStructure();
+        },
+        
+        // 确保配置结构完整
+        ensureConfigStructure() {
+            // 确保LLM配置结构
+            if (!this.config.llm) this.config.llm = {};
+            if (!this.config.llm.provider) this.config.llm.provider = 'OpenAI';
+            
+            // 确保各个LLM提供商配置存在
+            const llmProviders = ['OpenAI', 'Moonshot', 'Azure', 'DeepSeek', 'Ollama', 'Qianfan', 'Baichuan', 'Tongyi'];
+            llmProviders.forEach(provider => {
+                if (!this.config.llm[provider]) {
+                    this.config.llm[provider] = { api_key: '', model_name: '' };
+                }
+            });
+            
+            // 确保音频配置结构
+            if (!this.config.audio) this.config.audio = {};
+            if (!this.config.audio.provider) this.config.audio.provider = 'Azure';
+            if (!this.config.audio.local_tts) this.config.audio.local_tts = { provider: 'chatTTS' };
+            
+            // 确保资源配置结构
+            if (!this.config.resource) this.config.resource = {};
+            if (!this.config.resource.provider) this.config.resource.provider = 'pexels';
+            
+            // 确保发布配置结构
+            if (!this.config.publisher) this.config.publisher = {};
+            if (!this.config.publisher.driver_type) this.config.publisher.driver_type = 'chrome';
+            
+            // 确保UI配置结构
+            if (!this.config.ui) this.config.ui = {};
+            if (!this.config.ui.language) this.config.ui.language = 'zh-CN';
+            
+            console.log('配置结构确保完成:', this.config);
+        },
+        
+        async saveAllConfig() {
+            try {
+                showToast('正在保存配置...', 'info');
+                
+                const response = await fetch('/config/save', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ config: this.config })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    showToast('配置保存成功！', 'success');
+                } else {
+                    showToast('保存配置失败: ' + result.message, 'error');
+                }
+            } catch (error) {
+                console.error('保存配置失败:', error);
+                showToast('保存配置失败', 'error');
+            }
+        },
+        
+        async testLLMConnection() {
+            try {
+                this.testingConnection = true;
+                this.testResult = null;
+                
+                console.log('开始测试LLM连接...', this.config.llm.provider);
+                
+                const response = await fetch(`/config/test/${this.config.llm.provider}`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                });
+                
+                const result = await response.json();
+                this.testResult = result;
+                
+                console.log('LLM连接测试结果:', result);
+                
+                if (result.success) {
+                    showToast('LLM连接测试成功！', 'success');
+                } else {
+                    showToast('LLM连接测试失败: ' + result.message, 'error');
+                }
+            } catch (error) {
+                console.error('LLM连接测试失败:', error);
+                this.testResult = {
+                    success: false, 
+                    message: '网络错误或服务不可用'
+                };
+                showToast('LLM连接测试失败', 'error');
+            } finally {
+                this.testingConnection = false;
+            }
+        }
+    }
+}
+</script>
+{% endblock %}

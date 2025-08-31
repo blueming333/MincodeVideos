@@ -1,8 +1,8 @@
-# MoneyPrinterPlus 项目详细文档
+# MincodeVideos 项目详细文档
 
 ## 项目概述
 
-MoneyPrinterPlus 是一个基于AI技术的全栈短视频生成和发布工具。该项目旨在帮助用户快速生成高质量的短视频内容，并支持批量自动发布到各大视频平台。
+MincodeVideos 是一个基于AI技术的全栈短视频生成和发布工具。该项目旨在帮助用户快速生成高质量的短视频内容，并支持批量自动发布到各大视频平台。
 
 ### 主要特性
 - 🤖 **AI视频生成**: 使用大语言模型自动生成视频脚本和内容
@@ -17,7 +17,7 @@ MoneyPrinterPlus 是一个基于AI技术的全栈短视频生成和发布工具�
 ### 整体架构
 
 ```
-MoneyPrinterPlus/
+MincodeVideos/
 ├── config/              # 配置文件管理
 ├── pages/               # Streamlit页面组件
 ├── services/            # 业务服务层
@@ -220,8 +220,8 @@ azure-cognitiveservices-speech==1.36.0  # Azure语音服务
 
 #### 1. 克隆项目
 ```bash
-git clone https://github.com/ddean2009/MoneyPrinterPlus.git
-cd MoneyPrinterPlus
+git clone https://github.com/ddean2009/MoneyPrinterPlus.git  # 原作者仓库
+cd MincodeVideos  # 或者使用您自己的项目目录名
 ```
 
 #### 2. 安装Python依赖
@@ -588,7 +588,7 @@ server {
 
 ## 总结
 
-MoneyPrinterPlus是一个功能强大、架构清晰的AI短视频生成平台。通过模块化的设计和丰富的功能扩展，该项目为开发者提供了一个优秀的学习和实践平台。
+MincodeVideos是一个功能强大、架构清晰的AI短视频生成平台。通过模块化的设计和丰富的功能扩展，该项目为开发者提供了一个优秀的学习和实践平台。
 
 ### 项目优势
 - **技术栈现代化**: 使用最新的AI技术和Web框架
@@ -608,4 +608,4 @@ MoneyPrinterPlus是一个功能强大、架构清晰的AI短视频生成平台�
 
 **作者**: 程序那些事
 **邮箱**: flydean@163.com
-**项目地址**: https://github.com/ddean2009/MoneyPrinterPlus
+**原作者项目地址**: https://github.com/ddean2009/MoneyPrinterPlus

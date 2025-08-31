@@ -1,0 +1,6 @@
+# Flask Web Framework Requirements - 核心依赖
+Flask
+Flask-CORS
+
+# 为了快速测试，先只安装基础依赖
+# 如果需要完整功能，请安装原项目依赖: pip install -r ../requirements.txt
