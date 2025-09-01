@@ -34,10 +34,11 @@ REM 设置环境变量
 set FLASK_APP=run.py
 set FLASK_ENV=development
 set FLASK_DEBUG=True
-set FLASK_HOST=127.0.0.1
+set FLASK_HOST=0.0.0.0
 set FLASK_PORT=5000
 
-echo 📍 启动地址: http://%FLASK_HOST%:%FLASK_PORT%
+echo 📍 启动地址: http://%FLASK_HOST%:%FLASK_PORT% (本机访问: http://127.0.0.1:%FLASK_PORT%)
+echo 🌐 外部访问: 请查看本机IP地址
 echo 🔧 调试模式: 开启
 echo 📁 工作目录: %CD%
 echo 📂 虚拟环境: %ROOT_DIR%\venv

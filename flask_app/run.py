@@ -22,6 +22,7 @@ if __name__ == '__main__':
     🚀 MincodeVideos Flask 版本启动中...
     
     📍 访问地址: http://{host}:{port}
+    {'🌐 外部访问: 已开启 (0.0.0.0)' if host == '0.0.0.0' else '🏠 本地访问: 仅限本机'}
     🔧 调试模式: {'开启' if debug_mode else '关闭'}
     📁 工作目录: {os.getcwd()}
     
@@ -29,6 +30,7 @@ if __name__ == '__main__':
        • AI视频生成: http://{host}:{port}/video/generate
        • 视频混剪: http://{host}:{port}/mix/batch  
        • 作品展示: http://{host}:{port}/gallery/
+       • 素材搜索: http://{host}:{port}/material/search
        • 系统配置: http://{host}:{port}/config/
     
     💡 提示: 首次使用请先完成系统配置

@@ -33,7 +33,7 @@ cd "$SCRIPT_DIR"
 export FLASK_APP=run.py
 export FLASK_ENV=development
 export FLASK_DEBUG=True
-export FLASK_HOST=127.0.0.1
+export FLASK_HOST=0.0.0.0
 export FLASK_PORT=5000
 
 # 检查端口是否被占用
@@ -42,7 +42,8 @@ if lsof -i:$FLASK_PORT >/dev/null 2>&1; then
     export FLASK_PORT=5001
 fi
 
-echo "📍 启动地址: http://$FLASK_HOST:$FLASK_PORT"
+echo "📍 启动地址: http://$FLASK_HOST:$FLASK_PORT (本机访问: http://127.0.0.1:$FLASK_PORT)"
+echo "🌐 外部访问: http://$(hostname -I | awk '{print $1}'):$FLASK_PORT"
 echo "🔧 调试模式: 开启"
 echo "📁 工作目录: $(pwd)"
 echo "📂 虚拟环境: $ROOT_DIR/venv"
