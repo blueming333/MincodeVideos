@@ -1,0 +1,93 @@
+<!-- 语言切换器组件 -->
+<div class="language-switcher" x-data="languageSwitcher()">
+    <div class="dropdown">
+        <button class="btn btn-outline-secondary btn-sm dropdown-toggle" 
+                type="button" 
+                id="languageDropdown" 
+                data-bs-toggle="dropdown" 
+                aria-expanded="false">
+            <i class="bi bi-globe me-1"></i>
+            <span x-text="currentLocale.nativeName"></span>
+        </button>
+        <ul class="dropdown-menu" aria-labelledby="languageDropdown">
+            <template x-for="locale in availableLocales" :key="locale.code">
+                <li>
+                    <button class="dropdown-item d-flex align-items-center" 
+                            @click="changeLanguage(locale.code)"
+                            :class="{ 'active': locale.code === currentLocale.code }">
+                        <span class="me-2" x-text="locale.nativeName"></span>
+                        <small class="text-muted" x-text="locale.name"></small>
+                        <i class="bi bi-check ms-auto" 
+                           x-show="locale.code === currentLocale.code"></i>
+                    </button>
+                </li>
+            </template>
+        </ul>
+    </div>
+</div>
+
+<script>
+function languageSwitcher() {
+    return {
+        currentLocale: { code: 'en', name: 'English', nativeName: 'English' },
+        availableLocales: [],
+        
+        init() {
+            // 获取当前语言设置
+            this.loadCurrentLocale();
+            
+            // 监听语言切换事件
+            document.addEventListener('localeChanged', (event) => {
+                this.currentLocale = this.availableLocales.find(
+                    l => l.code === event.detail.locale
+                ) || this.currentLocale;
+            });
+        },
+        
+        async loadCurrentLocale() {
+            if (window.i18n) {
+                this.currentLocale = window.i18n.getAvailableLocales().find(
+                    l => l.code === window.i18n.getCurrentLocale()
+                ) || this.currentLocale;
+                this.availableLocales = window.i18n.getAvailableLocales();
+            }
+        },
+        
+        async changeLanguage(locale) {
+            if (window.i18n) {
+                const success = await window.i18n.setLocale(locale);
+                if (success) {
+                    // 显示成功提示
+                    this.showMessage('success', window.i18n.t('Language changed successfully'));
+                    
+                    // 可选：刷新页面以完全更新内容
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 500);
+                } else {
+                    this.showMessage('error', 'Failed to change language');
+                }
+            }
+        },
+        
+        showMessage(type, message) {
+            // 简单的消息提示
+            const toast = document.createElement('div');
+            toast.className = `alert alert-${type === 'success' ? 'success' : 'danger'} alert-dismissible fade show position-fixed`;
+            toast.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
+            toast.innerHTML = `
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            `;
+            document.body.appendChild(toast);
+            
+            // 3秒后自动移除
+            setTimeout(() => {
+                if (toast.parentNode) {
+                    toast.parentNode.removeChild(toast);
+                }
+            }, 3000);
+        }
+    }
+}
+</script>

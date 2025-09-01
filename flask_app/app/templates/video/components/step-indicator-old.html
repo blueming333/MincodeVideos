@@ -1,0 +1,100 @@
+<!-- 进度指示器 -->
+<div class="card mb-4">
+    <div class="card-body">
+        <div class="step-indicator">
+            <div class="step-container">
+                <div class="step" :class="getStepClass(1)">
+                    <span x-show="!getStepLoading(1)">1</span>
+                    <i class="bi bi-arrow-repeat spin" x-show="getStepLoading(1)"></i>
+                </div>
+                <div class="step-label">
+                    <h6 class="mb-0">内容生成</h6>
+                    <small class="text-muted">AI生成视频脚本</small>
+                    <div class="step-status" x-show="stepStatus[1]">
+                        <small :class="getStepStatusClass(1)" x-text="stepStatus[1]"></small>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="step-arrow">→</div>
+            
+            <div class="step-container">
+                <div class="step" :class="getStepClass(2)">
+                    <span x-show="!getStepLoading(2)">2</span>
+                    <i class="bi bi-arrow-repeat spin" x-show="getStepLoading(2)"></i>
+                </div>
+                <div class="step-label">
+                    <h6 class="mb-0">关键词生成</h6>
+                    <small class="text-muted">提取视觉关键词</small>
+                    <div class="step-status" x-show="stepStatus[2]">
+                        <small :class="getStepStatusClass(2)" x-text="stepStatus[2]"></small>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="step-arrow">→</div>
+            
+            <div class="step-container">
+                <div class="step" :class="getStepClass(3)">
+                    <span x-show="!getStepLoading(3)">3</span>
+                    <i class="bi bi-arrow-repeat spin" x-show="getStepLoading(3)"></i>
+                </div>
+                <div class="step-label">
+                    <h6 class="mb-0">资源获取</h6>
+                    <small class="text-muted">匹配视频素材</small>
+                    <div class="step-status" x-show="stepStatus[3]">
+                        <small :class="getStepStatusClass(3)" x-text="stepStatus[3]"></small>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="step-arrow">→</div>
+            
+            <div class="step-container">
+                <div class="step" :class="getStepClass(3)">
+                    <span x-show="!getStepLoading(3)">3</span>
+                    <i class="bi bi-arrow-repeat spin" x-show="getStepLoading(3)"></i>
+                </div>
+                <div class="step-label">
+                    <h6 class="mb-0">语音合成</h6>
+                    <small class="text-muted">生成AI配音</small>
+                    <div class="step-status" x-show="stepStatus[3]">
+                        <small :class="getStepStatusClass(3)" x-text="stepStatus[3]"></small>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="step-arrow">→</div>
+            
+            <div class="step-container">
+                <div class="step" :class="getStepClass(4)">
+                    <span x-show="!getStepLoading(4)">4</span>
+                    <i class="bi bi-arrow-repeat spin" x-show="getStepLoading(4)"></i>
+                </div>
+                <div class="step-label">
+                    <h6 class="mb-0">字幕生成</h6>
+                    <small class="text-muted">自动生成字幕</small>
+                    <div class="step-status" x-show="stepStatus[4]">
+                        <small :class="getStepStatusClass(4)" x-text="stepStatus[4]"></small>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="step-arrow">→</div>
+            
+            <div class="step-container">
+                <div class="step" :class="getStepClass(5)">
+                    <span x-show="!getStepLoading(5)">5</span>
+                    <i class="bi bi-arrow-repeat spin" x-show="getStepLoading(5)"></i>
+                </div>
+                <div class="step-label">
+                    <h6 class="mb-0">视频合成</h6>
+                    <small class="text-muted">生成最终视频</small>
+                    <div class="step-status" x-show="stepStatus[5]">
+                        <small :class="getStepStatusClass(5)" x-text="stepStatus[5]"></small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

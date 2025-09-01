@@ -1,4 +1,24 @@
 {
+  "MincodeVideos - AI Video Generation Platform": "MincodeVideos - AI Video Generation Platform",
+  
+  "Home": "Home",
+  "Dashboard": "Dashboard", 
+  "AI Video Generation": "AI Video Generation",
+  "Video Mixing": "Video Mixing",
+  "Video Merge": "Video Merge", 
+  "Gallery": "Gallery",
+  "Batch Publish": "Batch Publish",
+  "System Settings": "System Settings",
+  "Production Version": "Production Version",
+  "Help Documentation": "Help Documentation",
+  
+  "AI Video Generation Workflow": "AI Video Generation Workflow",
+  "Generate high-quality short videos automatically using AI technology": "Generate high-quality short videos automatically using AI technology",
+  "Auto Generate": "Auto Generate",
+  "Stop Execution": "Stop Execution", 
+  "Reset Workflow": "Reset Workflow",
+  "Language changed successfully": "Language changed successfully",
+  
   "Base Config": "Base Config",
   "Generate Video" : "Generate Video",
   "Mix Video": "Mix Video",

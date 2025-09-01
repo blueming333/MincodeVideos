@@ -1,0 +1,218 @@
+<!-- 步骤1: 内容生成 -->
+<div class="card mb-4" x-show="currentStep >= 1">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="card-title mb-0">
+            <i class="bi bi-file-text me-2"></i>
+            步骤1: 内容生成
+        </h5>
+        <button class="btn btn-primary" @click="generateContent()" 
+                :disabled="isLoading || isAutoRunning" x-show="!results.content">
+            <span x-show="!isLoading">
+                <i class="bi bi-magic me-2"></i>生成内容
+            </span>
+            <span x-show="isLoading">
+                <i class="bi bi-arrow-repeat spin me-2"></i>生成中...
+            </span>
+        </button>
+    </div>
+    <div class="card-body">
+        <div x-show="!results.content && !isLoading" class="text-center text-muted py-4">
+            <i class="bi bi-file-text" style="font-size: 3rem; opacity: 0.3;"></i>
+            <p class="mt-2">点击"生成内容"开始AI脚本创作</p>
+        </div>
+        
+        <div x-show="results.content" class="border rounded p-3 bg-light">
+            <h6 class="fw-bold mb-2">生成的视频脚本:</h6>
+            <div class="content-display" style="max-height: 200px; overflow-y: auto;">
+                <p x-text="results.content" class="mb-0"></p>
+            </div>
+            <div class="d-flex justify-content-between mt-3">
+                <small class="text-muted">字数: <span x-text="results.content?.length || 0"></span></small>
+                <button class="btn btn-outline-secondary btn-sm" @click="editContent()">
+                    <i class="bi bi-pencil me-1"></i>编辑
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 步骤2: 资源获取 -->
+<div class="card mb-4" x-show="currentStep >= 2">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="card-title mb-0">
+            <i class="bi bi-images me-2"></i>
+            步骤2: 资源获取
+        </h5>
+        <button class="btn btn-success" @click="getResources()" 
+                :disabled="!results.content || isLoading || isAutoRunning" x-show="!results.resources">
+            <span x-show="!isLoading">
+                <i class="bi bi-download me-2"></i>获取资源
+            </span>
+            <span x-show="isLoading">
+                <i class="bi bi-arrow-repeat spin me-2"></i>获取中...
+            </span>
+        </button>
+    </div>
+    <div class="card-body">
+        <div x-show="!results.resources && !isLoading" class="text-center text-muted py-4">
+            <i class="bi bi-images" style="font-size: 3rem; opacity: 0.3;"></i>
+            <p class="mt-2">等待获取匹配的视频素材</p>
+        </div>
+        
+        <div x-show="results.resources" class="row">
+            <template x-for="(resource, index) in results.resources" :key="index">
+                <div class="col-md-4 mb-3">
+                    <div class="card border-0 shadow-sm">
+                        <img :src="resource.thumbnail" class="card-img-top" style="height: 120px; object-fit: cover;">
+                        <div class="card-body p-2">
+                            <small class="text-muted" x-text="resource.description"></small>
+                        </div>
+                    </div>
+                </div>
+            </template>
+        </div>
+    </div>
+</div>
+
+<!-- 步骤3: 语音合成 -->
+<div class="card mb-4" x-show="currentStep >= 3">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="card-title mb-0">
+            <i class="bi bi-mic me-2"></i>
+            步骤3: 语音合成
+        </h5>
+        <button class="btn btn-warning" @click="generateAudio()" 
+                :disabled="!results.content || isLoading || isAutoRunning" x-show="!results.audio">
+            <span x-show="!isLoading">
+                <i class="bi bi-volume-up me-2"></i>生成配音
+            </span>
+            <span x-show="isLoading">
+                <i class="bi bi-arrow-repeat spin me-2"></i>合成中...
+            </span>
+        </button>
+    </div>
+    <div class="card-body">
+        <div x-show="!results.audio && !isLoading" class="text-center text-muted py-4">
+            <i class="bi bi-mic" style="font-size: 3rem; opacity: 0.3;"></i>
+            <p class="mt-2">等待生成AI配音</p>
+        </div>
+        
+        <div x-show="results.audio" class="border rounded p-3 bg-light">
+            <div class="d-flex align-items-center justify-content-between">
+                <div>
+                    <h6 class="fw-bold mb-1">配音已生成</h6>
+                    <small class="text-muted">时长: <span x-text="results.audio?.duration || '未知'"></span>秒</small>
+                </div>
+                <div>
+                    <audio controls x-show="results.audio?.url">
+                        <source :src="results.audio?.url" type="audio/mpeg">
+                    </audio>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 步骤5: 字幕生成 -->
+<div class="card mb-4" x-show="currentStep >= 5">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="card-title mb-0">
+            <i class="bi bi-chat-quote me-2"></i>
+            步骤5: 字幕生成
+        </h5>
+        <button class="btn btn-info" @click="generateSubtitle()" 
+                :disabled="!results.audio || isLoading || isAutoRunning" x-show="!results.subtitle">
+            <span x-show="!isLoading">
+                <i class="bi bi-chat-quote me-2"></i>生成字幕
+            </span>
+            <span x-show="isLoading">
+                <i class="bi bi-arrow-repeat spin me-2"></i>生成中...
+            </span>
+        </button>
+    </div>
+    <div class="card-body">
+        <div x-show="!results.subtitle && !isLoading" class="text-center text-muted py-4">
+            <i class="bi bi-chat-quote" style="font-size: 3rem; opacity: 0.3;"></i>
+            <p class="mt-2">等待生成字幕文件</p>
+        </div>
+        
+        <div x-show="results.subtitle" class="border rounded p-3 bg-light">
+            <h6 class="fw-bold mb-2">字幕预览:</h6>
+            <div style="max-height: 150px; overflow-y: auto; font-family: monospace; font-size: 0.9em;">
+                <template x-for="(sub, index) in results.subtitle?.lines" :key="index">
+                    <div class="mb-1">
+                        <small class="text-muted" x-text="sub.timestamp"></small>
+                        <span x-text="sub.text"></span>
+                    </div>
+                </template>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 步骤5: 视频合成 -->
+<div class="card mb-4" x-show="currentStep >= 5">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="card-title mb-0">
+            <i class="bi bi-film me-2"></i>
+            步骤5: 视频合成
+        </h5>
+        <button class="btn btn-danger" @click="generateVideo()" 
+                :disabled="!canGenerateVideo() || isLoading || isAutoRunning" x-show="!results.video">
+            <span x-show="!isLoading">
+                <i class="bi bi-film me-2"></i>生成视频
+            </span>
+            <span x-show="isLoading">
+                <i class="bi bi-arrow-repeat spin me-2"></i>合成中...
+            </span>
+        </button>
+    </div>
+    <div class="card-body">
+        <div x-show="!results.video && !isLoading" class="text-center text-muted py-4">
+            <i class="bi bi-film" style="font-size: 3rem; opacity: 0.3;"></i>
+            <p class="mt-2">等待合成最终视频</p>
+        </div>
+        
+        <!-- 合成进度 -->
+        <div x-show="isLoading && currentStep === 5" class="mb-3">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <span class="fw-bold">视频合成进度</span>
+                <span x-text="progress + '%'"></span>
+            </div>
+            <div class="progress">
+                <div class="progress-bar progress-bar-striped progress-bar-animated" 
+                     :style="'width: ' + progress + '%'"></div>
+            </div>
+            <small class="text-muted">这可能需要几分钟时间，请耐心等待...</small>
+        </div>
+        
+        <!-- 最终结果 -->
+        <div x-show="results.video" class="border rounded p-3 bg-light">
+            <div class="text-center">
+                <video controls class="w-100" style="max-height: 400px;" x-show="results.video?.url">
+                    <source :src="results.video?.url" type="video/mp4">
+                </video>
+                <div class="mt-3">
+                    <h5 class="fw-bold text-success">
+                        <i class="bi bi-check-circle me-2"></i>
+                        视频生成完成！
+                    </h5>
+                    <div class="d-flex justify-content-center gap-3 mt-3">
+                        <a :href="results.video?.download_url" class="btn btn-success" download>
+                            <i class="bi bi-download me-2"></i>
+                            下载视频
+                        </a>
+                        <button class="btn btn-primary" @click="shareVideo()">
+                            <i class="bi bi-share me-2"></i>
+                            分享
+                        </button>
+                        <a href="{{ url_for('publish.batch') }}" class="btn btn-info">
+                            <i class="bi bi-cloud-upload me-2"></i>
+                            发布视频
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

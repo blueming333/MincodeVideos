@@ -1,16 +1,24 @@
 <!DOCTYPE html>
-<html lang="zh-CN" class="h-full">
+<html lang="{{ current_locale or 'en' }}" class="h-full">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}MincodeVideos - AI短视频生成平台{% endblock %}</title>
+    <title>{% block title %}{{ _('MincodeVideos - AI Video Generation Platform') }}{% endblock %}</title>
     
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Bootstrap Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+        <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    
     <!-- Alpine.js -->
-    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.3/dist/cdn.min.js"></script>
+    
+    <!-- 工具函数 -->
+    <script src="{{ url_for('static', filename='js/utils.js') }}"></script>
+    <!-- 国际化管理器 -->
+    <script src="{{ url_for('static', filename='js/i18n.js') }}"></script>
     <!-- Axios -->
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     
@@ -229,49 +237,54 @@
         <nav class="nav nav-pills flex-column mb-auto">
             <a href="{{ url_for('main.index') }}" class="nav-link {% if request.endpoint == 'main.index' %}active{% endif %}">
                 <i class="bi bi-house-fill me-2"></i>
-                首页
+                <span data-i18n="Home">{{ _('Home') }}</span>
             </a>
             <a href="{{ url_for('main.dashboard') }}" class="nav-link {% if request.endpoint == 'main.dashboard' %}active{% endif %}">
                 <i class="bi bi-speedometer2 me-2"></i>
-                工作台
+                <span data-i18n="Dashboard">{{ _('Dashboard') }}</span>
             </a>
             
             <hr class="my-3">
             
             <a href="{{ url_for('video.generate') }}" class="nav-link {% if request.endpoint == 'video.generate' %}active{% endif %}">
                 <i class="bi bi-camera-video-fill me-2"></i>
-                AI视频生成
+                <span data-i18n="AI Video Generation">{{ _('AI Video Generation') }}</span>
             </a>
             <a href="{{ url_for('mix.batch') }}" class="nav-link {% if request.endpoint == 'mix.batch' %}active{% endif %}">
                 <i class="bi bi-scissors me-2"></i>
-                视频混剪
+                <span data-i18n="Video Mixing">{{ _('Video Mixing') }}</span>
             </a>
             <a href="{{ url_for('mix.merge') }}" class="nav-link {% if request.endpoint == 'mix.merge' %}active{% endif %}">
                 <i class="bi bi-collection-play-fill me-2"></i>
-                视频合并
+                <span data-i18n="Video Merge">{{ _('Video Merge') }}</span>
             </a>
             <a href="{{ url_for('gallery.index') }}" class="nav-link {% if request.endpoint == 'gallery.index' %}active{% endif %}">
                 <i class="bi bi-grid-3x3-gap-fill me-2"></i>
-                作品展示
+                <span data-i18n="Gallery">{{ _('Gallery') }}</span>
             </a>
             <a href="{{ url_for('publish.batch') }}" class="nav-link {% if request.endpoint == 'publish.batch' %}active{% endif %}">
                 <i class="bi bi-cloud-upload-fill me-2"></i>
-                批量发布
+                <span data-i18n="Batch Publish">{{ _('Batch Publish') }}</span>
             </a>
             
             <hr class="my-3">
             
             <a href="{{ url_for('config.index') }}" class="nav-link {% if request.endpoint.startswith('config.') %}active{% endif %}">
                 <i class="bi bi-gear-fill me-2"></i>
-                系统设置
+                <span data-i18n="System Settings">{{ _('System Settings') }}</span>
             </a>
         </nav>
         
+        <!-- 语言切换器 -->
+        <div class="mt-auto pt-3">
+            {% include 'components/language-switcher.html' %}
+        </div>
+        
         <!-- 底部信息 -->
-        <div class="mt-auto pt-3 border-top">
+        <div class="pt-3 border-top">
             <div class="d-flex align-items-center">
                 <div class="flex-grow-1">
-                    <h6 class="mb-0 fs-6">运营版本</h6>
+                    <h6 class="mb-0 fs-6" data-i18n="Production Version">{{ _('Production Version') }}</h6>
                     <small class="text-muted">v2.0.0</small>
                 </div>
                 <div class="dropdown">
@@ -279,7 +292,7 @@
                         <i class="bi bi-three-dots"></i>
                     </button>
                     <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="#"><i class="bi bi-question-circle me-2"></i>帮助文档</a></li>
+                        <li><a class="dropdown-item" href="#"><i class="bi bi-question-circle me-2"></i><span data-i18n="Help Documentation">{{ _('Help Documentation') }}</span></a></li>
                         <li><a class="dropdown-item" href="#"><i class="bi bi-info-circle me-2"></i>关于</a></li>
                     </ul>
                 </div>

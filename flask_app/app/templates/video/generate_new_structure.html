@@ -34,15 +34,29 @@
 
 {% block extra_js %}
 <script src="{{ url_for('static', filename='js/video-generate.js') }}"></script>
+<script src="{{ url_for('static', filename='js/video-generate-auto.js') }}"></script>
 <script>
 // 初始化应用
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('页面初始化开始');
-});
-
-// 直接注册Alpine组件
-document.addEventListener('alpine:init', () => {
-    Alpine.data('videoGeneratePage', videoGeneratePage);
+    // 等待Alpine.js加载
+    document.addEventListener('alpine:init', () => {
+        Alpine.data('videoGeneratePage', () => {
+            const app = videoGeneratePage();
+            
+            // 加载所有方法
+            if (typeof loadAutoWorkflowMethods === 'function') {
+                loadAutoWorkflowMethods(app);
+            }
+            if (typeof loadManualStepMethods === 'function') {
+                loadManualStepMethods(app);
+            }
+            if (typeof loadAutoStepMethods === 'function') {
+                loadAutoStepMethods(app);
+            }
+            
+            return app;
+        });
+    });
 });
 </script>
 {% endblock %}

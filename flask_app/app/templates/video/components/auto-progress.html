@@ -1,0 +1,20 @@
+<!-- 全自动进度条 -->
+<div class="card mb-4" x-show="isAutoRunning || autoProgress > 0">
+    <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+            <h6 class="mb-0">
+                <i class="bi bi-robot me-2"></i>
+                全自动生成进度
+            </h6>
+            <span class="badge bg-primary" x-text="`${Math.round(autoProgress)}%`"></span>
+        </div>
+        <div class="progress mb-2" style="height: 8px;">
+            <div class="progress-bar progress-bar-striped progress-bar-animated" 
+                 :style="`width: ${autoProgress}%`"></div>
+        </div>
+        <div class="d-flex justify-content-between align-items-center">
+            <small class="text-muted" x-text="currentAutoStatus"></small>
+            <small class="text-muted" x-text="`步骤 ${currentAutoStep}/6`"></small>
+        </div>
+    </div>
+</div>

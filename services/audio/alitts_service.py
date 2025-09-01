@@ -26,7 +26,6 @@ import os
 from pydub import AudioSegment
 from pydub.playback import play
 
-from config.config import my_config
 from services.alinls.speech_synthesizer import NlsSpeechSynthesizer
 from services.alinls.token import getToken
 from services.audio.audio_service import AudioService
@@ -48,9 +47,26 @@ class AliAudioService(AudioService):
 
     def __init__(self):
         super().__init__()
-        self.ALI_ACCESS_AKID = my_config['audio']['Ali']['access_key_id']
-        self.ALI_ACCESS_AKKEY = my_config['audio']['Ali']['access_key_secret']
-        self.ALI_APP_KEY = my_config['audio']['Ali']['app_key']
+        
+        # 尝试使用配置管理器获取配置
+        try:
+            # 如果在Flask环境中，尝试使用配置管理器
+            try:
+                from flask_app.app.utils.config_manager import config_manager
+                config = config_manager.get_config()
+                ali_config = config.get('audio', {}).get('Ali', {})
+            except ImportError:
+                # 如果配置管理器不可用，使用传统方式
+                from config.config import my_config
+                ali_config = my_config.get('audio', {}).get('Ali', {})
+        except ImportError:
+            # 如果都不可用，使用环境变量或默认值
+            ali_config = {}
+        
+        self.ALI_ACCESS_AKID = ali_config.get('access_key_id') or os.getenv('ALI_ACCESS_AKID', '')
+        self.ALI_ACCESS_AKKEY = ali_config.get('access_key_secret') or os.getenv('ALI_ACCESS_AKKEY', '') 
+        self.ALI_APP_KEY = ali_config.get('app_key') or os.getenv('ALI_APP_KEY', '')
+        
         must_have_value(self.ALI_ACCESS_AKID, "请设置Ali access key id")
         must_have_value(self.ALI_ACCESS_AKKEY, "请设置Ali access key secret")
         must_have_value(self.ALI_APP_KEY, "请设置Ali app key")
@@ -97,6 +113,26 @@ class AliAudioService(AudioService):
         )
         r = nls_speech_synthesizer.start(text, voice=voice, aformat='wav', wait_complete=True, speech_rate=int(rate))
         print("ali tts done with result:{}".format(r))
+        
+        # 确保文件被关闭
+        try:
+            if hasattr(self, '__f') and self.__f:
+                self.__f.close()
+                print(f"文件已关闭: {file_name}")
+        except Exception as e:
+            print(f"关闭文件失败: {e}")
+        
+        # 检查文件是否生成成功
+        try:
+            if os.path.exists(file_name) and os.path.getsize(file_name) > 0:
+                print(f"音频文件生成成功: {file_name}, 大小: {os.path.getsize(file_name)} 字节")
+                return True
+            else:
+                print(f"音频文件生成失败或为空: {file_name}")
+                return False
+        except Exception as e:
+            print(f"检查文件状态失败: {e}")
+            return False
 
     def read_with_ssml(self, text, voice, rate="0"):
         temp_file = os.path.join(audio_output_dir, "temp.wav")

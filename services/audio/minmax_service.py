@@ -196,7 +196,14 @@ class MinMaxAudioService(AudioService):
 
         # 语音设置（遵循官方范围并使用配置/入参）
         # 允许从会话态覆盖 vol
-        vol = st.session_state.get("audio_vol") if 'st' in globals() else None
+        vol = None
+        try:
+            import streamlit as st
+            vol = st.session_state.get("audio_vol") if hasattr(st, 'session_state') else None
+        except (ImportError, AttributeError):
+            # 在Flask环境中或streamlit不可用时，vol保持None
+            pass
+        
         if vol is None:
             vol = self.default_vol
         if vol <= 0:
@@ -208,9 +215,18 @@ class MinMaxAudioService(AudioService):
             pitch = -12
         if pitch > 12:
             pitch = 12
+            
         # 允许从会话态覆盖 emotion
-        import streamlit as st
-        emotion = st.session_state.get("audio_emotion") or self.default_emotion
+        emotion = None
+        try:
+            import streamlit as st
+            emotion = st.session_state.get("audio_emotion") if hasattr(st, 'session_state') else None
+        except (ImportError, AttributeError):
+            # 在Flask环境中或streamlit不可用时，emotion保持None
+            pass
+            
+        if emotion is None:
+            emotion = self.default_emotion
 
         # 音频输出设置
         fmt = (target_format or self.audio_format or 'mp3').lower()

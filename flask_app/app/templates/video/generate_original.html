@@ -1,0 +1,1222 @@
+{% extends "base.html" %}
+
+{% block title %}AI视    <!-- 页面标题 -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="h2 fw-bold text-primary">
+                <i class="bi bi-camera-video-fill me-2"></i>
+                AI视频生成工作流
+            </h1>
+            <p class="text-muted">通过AI技术自动生成高质量短视频内容</p>
+        </div>
+        <div class="d-flex gap-2">
+            <button class="btn btn-success btn-lg" @click="runAutoWorkflow()" 
+                    :disabled="!canStartAutoWorkflow() || isAutoRunning" x-show="!isAutoRunning">
+                <i class="bi bi-play-circle-fill me-2"></i>
+                全自动生成
+            </button>
+            <button class="btn btn-danger btn-lg" @click="stopAutoWorkflow()" x-show="isAutoRunning">
+                <i class="bi bi-stop-circle-fill me-2"></i>
+                停止执行
+            </button>
+            <button class="btn btn-outline-secondary" @click="resetWorkflow()">
+                <i class="bi bi-arrow-clockwise me-2"></i>
+                重置工作流
+            </button>
+        </div>
+    </div>
+    
+    <!-- 全自动进度条 -->
+    <div class="card mb-4" x-show="isAutoRunning || autoProgress > 0">
+        <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <h6 class="mb-0">
+                    <i class="bi bi-robot me-2"></i>
+                    全自动生成进度
+                </h6>
+                <span class="badge bg-primary" x-text="`${Math.round(autoProgress)}%`"></span>
+            </div>
+            <div class="progress mb-2" style="height: 8px;">
+                <div class="progress-bar progress-bar-striped progress-bar-animated" 
+                     :style="`width: ${autoProgress}%`"></div>
+            </div>
+            <div class="d-flex justify-content-between align-items-center">
+                <small class="text-muted" x-text="currentAutoStatus"></small>
+                <small class="text-muted" x-text="`步骤 ${currentAutoStep}/5`"></small>
+            </div>
+        </div>
+    </div>eos{% endblock %}
+
+{% block content %}
+<div x-data="videoGener                        <div class="row mb-2">
+                            <div class="col-6">
+                                <label class="form-label">音频类型</label>
+                                <select class="form-select" x-model="config.audio.type">
+                                    {% for key, value in audio_types.items() %}
+                                    <option value="{{ key }}">{{ value }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-6" x-show="config.audio.type === 'remote'">
+                                <label class="form-label">音频语言</label>
+                                <select class="form-select" x-model="config.audio.language">
+                                    {% for key, value in audio_languages.items() %}
+                                    <option value="{{ key }}">{{ value }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>                        <div class="row mb-2" x-show="config.audio.type === 'remote'">
+                            <div class="col-6">
+                                <label class="form-label">语音</label>
+                                <select class="form-select" x-model="config.audio.voice">
+                                    <template x-for="(voices, lang) in {{ audio_voices|tojson }}">
+                                        <optgroup :label="lang" x-show="lang === config.audio.language">
+                                            <template x-for="(name, key) in voices">
+                                                <option :value="key" x-text="name" x-show="lang === config.audio.language"></option>
+                                            </template>
+                                        </optgroup>
+                                    </template>
+                                </select>
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label">语音速度</label>
+                                <select class="form-select" x-model="config.audio.speed">
+                                    <option value="slowest">最慢</option>
+                                    <option value="slower">较慢</option>
+                                    <option value="slow">慢</option>
+                                    <option value="normal">正常</option>
+                                    <option value="fast">快</option>
+                                    <option value="faster">较快</option>
+                                    <option value="fastest">最快</option>
+                                </select>
+                            </div>
+                        </div><!-- 页面标题 -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="h2 fw-bold text-primary">
+                <i class="bi bi-camera-video-fill me-2"></i>
+                AI视频生成工作流
+            </h1>
+            <p class="text-muted">通过AI技术自动生成高质量短视频内容</p>
+        </div>
+        <div>
+            <button class="btn btn-outline-secondary" @click="resetWorkflow()">
+                <i class="bi bi-arrow-clockwise me-2"></i>
+                重置工作流
+            </button>
+        </div>
+    </div>
+    
+    <!-- 进度指示器 -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <div class="step-indicator">
+                <div class="step-container">
+                    <div class="step" :class="getStepClass(1)">
+                        <span x-show="!getStepLoading(1)">1</span>
+                        <i class="bi bi-arrow-repeat spin" x-show="getStepLoading(1)"></i>
+                    </div>
+                    <div class="step-label">
+                        <h6 class="mb-0">内容生成</h6>
+                        <small class="text-muted">AI生成视频脚本</small>
+                        <div class="step-status" x-show="stepStatus[1]">
+                            <small :class="getStepStatusClass(1)" x-text="stepStatus[1]"></small>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="step-arrow">→</div>
+                
+                <div class="step-container">
+                    <div class="step" :class="getStepClass(2)">
+                        <span x-show="!getStepLoading(2)">2</span>
+                        <i class="bi bi-arrow-repeat spin" x-show="getStepLoading(2)"></i>
+                    </div>
+                    <div class="step-label">
+                        <h6 class="mb-0">资源获取</h6>
+                        <small class="text-muted">匹配视频素材</small>
+                        <div class="step-status" x-show="stepStatus[2]">
+                            <small :class="getStepStatusClass(2)" x-text="stepStatus[2]"></small>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="step-arrow">→</div>
+                
+                <div class="step-container">
+                    <div class="step" :class="getStepClass(3)">
+                        <span x-show="!getStepLoading(3)">3</span>
+                        <i class="bi bi-arrow-repeat spin" x-show="getStepLoading(3)"></i>
+                    </div>
+                    <div class="step-label">
+                        <h6 class="mb-0">语音合成</h6>
+                        <small class="text-muted">生成AI配音</small>
+                        <div class="step-status" x-show="stepStatus[3]">
+                            <small :class="getStepStatusClass(3)" x-text="stepStatus[3]"></small>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="step-arrow">→</div>
+                
+                <div class="step-container">
+                    <div class="step" :class="getStepClass(4)">
+                        <span x-show="!getStepLoading(4)">4</span>
+                        <i class="bi bi-arrow-repeat spin" x-show="getStepLoading(4)"></i>
+                    </div>
+                    <div class="step-label">
+                        <h6 class="mb-0">字幕生成</h6>
+                        <small class="text-muted">自动生成字幕</small>
+                        <div class="step-status" x-show="stepStatus[4]">
+                            <small :class="getStepStatusClass(4)" x-text="stepStatus[4]"></small>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="step-arrow">→</div>
+                
+                <div class="step-container">
+                    <div class="step" :class="getStepClass(5)">
+                        <span x-show="!getStepLoading(5)">5</span>
+                        <i class="bi bi-arrow-repeat spin" x-show="getStepLoading(5)"></i>
+                    </div>
+                    <div class="step-label">
+                        <h6 class="mb-0">视频合成</h6>
+                        <small class="text-muted">生成最终视频</small>
+                        <div class="step-status" x-show="stepStatus[5]">
+                            <small :class="getStepStatusClass(5)" x-text="stepStatus[5]"></small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 工作流步骤内容 -->
+    <div class="row">
+        <!-- 左侧配置面板 -->
+        <div class="col-lg-4">
+            <div class="card sticky-top" style="top: 20px;">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">
+                        <i class="bi bi-sliders me-2"></i>
+                        生成配置
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <!-- 基础配置 -->
+                    <div class="mb-3">
+                        <label class="form-label">视频主题</label>
+                        <textarea class="form-control" rows="3" x-model="config.topic" 
+                                  placeholder="请输入您想要生成的视频主题，例如：人工智能的发展历程"></textarea>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-6">
+                            <label class="form-label">视频语言</label>
+                            <select class="form-select" x-model="config.language">
+                                {% for key, value in languages.items() %}
+                                <option value="{{ key }}">{{ value }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label">时长(秒)</label>
+                            <input type="number" class="form-control" x-model="config.duration" 
+                                   min="30" max="300" value="120">
+                        </div>
+                    </div>
+                    
+                    <!-- 视频配置 -->
+                    <div class="border rounded p-3 mb-3 bg-light">
+                        <h6 class="fw-bold mb-3">视频设置</h6>
+                        <div class="row mb-2">
+                            <div class="col-6">
+                                <label class="form-label">布局</label>
+                                <select class="form-select form-select-sm" x-model="config.video.layout" @change="updateVideoSize()">
+                                    <option value="landscape">横屏 (16:9)</option>
+                                    <option value="portrait">竖屏 (9:16)</option>
+                                    <option value="square">方形 (1:1)</option>
+                                </select>
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label">帧率</label>
+                                <select class="form-select form-select-sm" x-model="config.video.fps">
+                                    <option value="20">20 FPS</option>
+                                    <option value="25">25 FPS</option>
+                                    <option value="30">30 FPS</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" x-model="config.video.enable_transition">
+                            <label class="form-check-label">启用转场特效</label>
+                        </div>
+                    </div>
+                    
+                    <!-- 语音配置 -->
+                    <div class="border rounded p-3 mb-3 bg-light">
+                        <h6 class="fw-bold mb-3">语音设置</h6>
+                        <div class="row mb-2">
+                            <div class="col-6">
+                                <label class="form-label">语音类型</label>
+                                <select class="form-select form-select-sm" x-model="config.audio.type">
+                                    {% for key, value in audio_types.items() %}
+                                    <option value="{{ key }}">{{ value }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-6" x-show="config.audio.type === 'remote'">
+                                <label class="form-label">语音语言</label>
+                                <select class="form-select form-select-sm" x-model="config.audio.language">
+                                    {% for key, value in audio_languages.items() %}
+                                    <option value="{{ key }}">{{ value }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row mb-2" x-show="config.audio.type === 'remote'">
+                            <div class="col-6">
+                                <label class="form-label">语音角色</label>
+                                <select class="form-select form-select-sm" x-model="config.audio.voice">
+                                    {% for lang, voices in audio_voices.items() %}
+                                        {% for voice_key, voice_name in voices.items() %}
+                                            <option value="{{ voice_key }}" 
+                                                    x-show="config.audio.language === '{{ lang }}'">
+                                                {{ voice_name }}
+                                            </option>
+                                        {% endfor %}
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label">语音速度</label>
+                                <select class="form-select form-select-sm" x-model="config.audio.speed">
+                                    <option value="slowest">最慢</option>
+                                    <option value="slower">较慢</option>
+                                    <option value="slow">慢</option>
+                                    <option value="normal">正常</option>
+                                    <option value="fast">快</option>
+                                    <option value="faster">较快</option>
+                                    <option value="fastest">最快</option>
+                                </select>
+                            </div>
+                        </div>
+                        <button class="btn btn-outline-primary btn-sm w-100" @click="testAudio()">
+                            <i class="bi bi-volume-up me-1"></i>
+                            试听语音
+                        </button>
+                    </div>
+                    
+                    <!-- 字幕配置 -->
+                    <div class="border rounded p-3 bg-light">
+                        <h6 class="fw-bold mb-3">字幕设置</h6>
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="checkbox" x-model="config.subtitle.enabled" checked>
+                            <label class="form-check-label">启用字幕</label>
+                        </div>
+                        <div class="row mb-2" x-show="config.subtitle.enabled">
+                            <div class="col-6">
+                                <label class="form-label">字体</label>
+                                <select class="form-select form-select-sm" x-model="config.subtitle.font">
+                                    {% for font in subtitle_fonts %}
+                                    <option value="{{ font }}">{{ font }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label">大小</label>
+                                <select class="form-select form-select-sm" x-model="config.subtitle.size">
+                                    <option value="16">16</option>
+                                    <option value="18">18</option>
+                                    <option value="20">20</option>
+                                    <option value="22">22</option>
+                                    <option value="24">24</option>
+                                    <option value="28">28</option>
+                                    <option value="32">32</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row mb-2" x-show="config.subtitle.enabled">
+                            <div class="col-4">
+                                <label class="form-label">位置</label>
+                                <select class="form-select form-select-sm" x-model="config.subtitle.position">
+                                    {% for key, value in subtitle_positions.items() %}
+                                    <option value="{{ key }}">{{ value }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-4">
+                                <label class="form-label">颜色</label>
+                                <input type="color" class="form-control form-control-color form-control-sm" 
+                                       x-model="config.subtitle.color">
+                            </div>
+                            <div class="col-4">
+                                <label class="form-label">边框</label>
+                                <select class="form-select form-select-sm" x-model="config.subtitle.border_width">
+                                    <option value="0">无边框</option>
+                                    <option value="1">1px</option>
+                                    <option value="2">2px</option>
+                                    <option value="3">3px</option>
+                                    <option value="4">4px</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 右侧工作区 -->
+        <div class="col-lg-8">
+            <!-- 步骤1: 内容生成 -->
+            <div class="card mb-4" x-show="currentStep >= 1">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="card-title mb-0">
+                        <i class="bi bi-file-text me-2"></i>
+                        步骤1: 内容生成
+                    </h5>
+                    <button class="btn btn-primary" @click="generateContent()" 
+                            :disabled="isLoading || isAutoRunning" x-show="!results.content">
+                        <span x-show="!isLoading">
+                            <i class="bi bi-magic me-2"></i>生成内容
+                        </span>
+                        <span x-show="isLoading">
+                            <i class="bi bi-arrow-repeat spin me-2"></i>生成中...
+                        </span>
+                    </button>
+                </div>
+                <div class="card-body">
+                    <div x-show="!results.content && !isLoading" class="text-center text-muted py-4">
+                        <i class="bi bi-file-text" style="font-size: 3rem; opacity: 0.3;"></i>
+                        <p class="mt-2">点击"生成内容"开始AI脚本创作</p>
+                    </div>
+                    
+                    <div x-show="results.content" class="border rounded p-3 bg-light">
+                        <h6 class="fw-bold mb-2">生成的视频脚本:</h6>
+                        <div class="content-display" style="max-height: 200px; overflow-y: auto;">
+                            <p x-text="results.content" class="mb-0"></p>
+                        </div>
+                        <div class="d-flex justify-content-between mt-3">
+                            <small class="text-muted">字数: <span x-text="results.content?.length || 0"></span></small>
+                            <button class="btn btn-outline-secondary btn-sm" @click="editContent()">
+                                <i class="bi bi-pencil me-1"></i>编辑
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 步骤2: 资源获取 -->
+            <div class="card mb-4" x-show="currentStep >= 2">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="card-title mb-0">
+                        <i class="bi bi-images me-2"></i>
+                        步骤2: 资源获取
+                    </h5>
+                    <button class="btn btn-success" @click="getResources()" 
+                            :disabled="!results.content || isLoading || isAutoRunning" x-show="!results.resources">
+                        <span x-show="!isLoading">
+                            <i class="bi bi-download me-2"></i>获取资源
+                        </span>
+                        <span x-show="isLoading">
+                            <i class="bi bi-arrow-repeat spin me-2"></i>获取中...
+                        </span>
+                    </button>
+                </div>
+                <div class="card-body">
+                    <div x-show="!results.resources && !isLoading" class="text-center text-muted py-4">
+                        <i class="bi bi-images" style="font-size: 3rem; opacity: 0.3;"></i>
+                        <p class="mt-2">等待获取匹配的视频素材</p>
+                    </div>
+                    
+                    <div x-show="results.resources" class="row">
+                        <template x-for="(resource, index) in results.resources" :key="index">
+                            <div class="col-md-4 mb-3">
+                                <div class="card border-0 shadow-sm">
+                                    <img :src="resource.thumbnail" class="card-img-top" style="height: 120px; object-fit: cover;">
+                                    <div class="card-body p-2">
+                                        <small class="text-muted" x-text="resource.description"></small>
+                                    </div>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 步骤3: 语音合成 -->
+            <div class="card mb-4" x-show="currentStep >= 3">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="card-title mb-0">
+                        <i class="bi bi-mic me-2"></i>
+                        步骤3: 语音合成
+                    </h5>
+                    <button class="btn btn-warning" @click="generateAudio()" 
+                            :disabled="!results.content || isLoading || isAutoRunning" x-show="!results.audio">
+                        <span x-show="!isLoading">
+                            <i class="bi bi-volume-up me-2"></i>生成配音
+                        </span>
+                        <span x-show="isLoading">
+                            <i class="bi bi-arrow-repeat spin me-2"></i>合成中...
+                        </span>
+                    </button>
+                </div>
+                <div class="card-body">
+                    <div x-show="!results.audio && !isLoading" class="text-center text-muted py-4">
+                        <i class="bi bi-mic" style="font-size: 3rem; opacity: 0.3;"></i>
+                        <p class="mt-2">等待生成AI配音</p>
+                    </div>
+                    
+                    <div x-show="results.audio" class="border rounded p-3 bg-light">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <div>
+                                <h6 class="fw-bold mb-1">配音已生成</h6>
+                                <small class="text-muted">时长: <span x-text="results.audio?.duration || '未知'"></span>秒</small>
+                            </div>
+                            <div>
+                                <audio controls x-show="results.audio?.url">
+                                    <source :src="results.audio?.url" type="audio/mpeg">
+                                </audio>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 步骤4: 字幕生成 -->
+            <div class="card mb-4" x-show="currentStep >= 4">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="card-title mb-0">
+                        <i class="bi bi-chat-quote me-2"></i>
+                        步骤4: 字幕生成
+                    </h5>
+                    <button class="btn btn-info" @click="generateSubtitle()" 
+                            :disabled="!results.audio || isLoading || isAutoRunning" x-show="!results.subtitle">
+                        <span x-show="!isLoading">
+                            <i class="bi bi-chat-quote me-2"></i>生成字幕
+                        </span>
+                        <span x-show="isLoading">
+                            <i class="bi bi-arrow-repeat spin me-2"></i>生成中...
+                        </span>
+                    </button>
+                </div>
+                <div class="card-body">
+                    <div x-show="!results.subtitle && !isLoading" class="text-center text-muted py-4">
+                        <i class="bi bi-chat-quote" style="font-size: 3rem; opacity: 0.3;"></i>
+                        <p class="mt-2">等待生成字幕文件</p>
+                    </div>
+                    
+                    <div x-show="results.subtitle" class="border rounded p-3 bg-light">
+                        <h6 class="fw-bold mb-2">字幕预览:</h6>
+                        <div style="max-height: 150px; overflow-y: auto; font-family: monospace; font-size: 0.9em;">
+                            <template x-for="(sub, index) in results.subtitle?.lines" :key="index">
+                                <div class="mb-1">
+                                    <small class="text-muted" x-text="sub.timestamp"></small>
+                                    <span x-text="sub.text"></span>
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 步骤5: 视频合成 -->
+            <div class="card mb-4" x-show="currentStep >= 5">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="card-title mb-0">
+                        <i class="bi bi-film me-2"></i>
+                        步骤5: 视频合成
+                    </h5>
+                    <button class="btn btn-danger" @click="generateVideo()" 
+                            :disabled="!canGenerateVideo() || isLoading || isAutoRunning" x-show="!results.video">
+                        <span x-show="!isLoading">
+                            <i class="bi bi-film me-2"></i>生成视频
+                        </span>
+                        <span x-show="isLoading">
+                            <i class="bi bi-arrow-repeat spin me-2"></i>合成中...
+                        </span>
+                    </button>
+                </div>
+                <div class="card-body">
+                    <div x-show="!results.video && !isLoading" class="text-center text-muted py-4">
+                        <i class="bi bi-film" style="font-size: 3rem; opacity: 0.3;"></i>
+                        <p class="mt-2">等待合成最终视频</p>
+                    </div>
+                    
+                    <!-- 合成进度 -->
+                    <div x-show="isLoading && currentStep === 5" class="mb-3">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span class="fw-bold">视频合成进度</span>
+                            <span x-text="progress + '%'"></span>
+                        </div>
+                        <div class="progress">
+                            <div class="progress-bar progress-bar-striped progress-bar-animated" 
+                                 :style="'width: ' + progress + '%'"></div>
+                        </div>
+                        <small class="text-muted">这可能需要几分钟时间，请耐心等待...</small>
+                    </div>
+                    
+                    <!-- 最终结果 -->
+                    <div x-show="results.video" class="border rounded p-3 bg-light">
+                        <div class="text-center">
+                            <video controls class="w-100" style="max-height: 400px;" x-show="results.video?.url">
+                                <source :src="results.video?.url" type="video/mp4">
+                            </video>
+                            <div class="mt-3">
+                                <h5 class="fw-bold text-success">
+                                    <i class="bi bi-check-circle me-2"></i>
+                                    视频生成完成！
+                                </h5>
+                                <div class="d-flex justify-content-center gap-3 mt-3">
+                                    <a :href="results.video?.download_url" class="btn btn-success" download>
+                                        <i class="bi bi-download me-2"></i>
+                                        下载视频
+                                    </a>
+                                    <button class="btn btn-primary" @click="shareVideo()">
+                                        <i class="bi bi-share me-2"></i>
+                                        分享
+                                    </button>
+                                    <a href="{{ url_for('publish.batch') }}" class="btn btn-info">
+                                        <i class="bi bi-cloud-upload me-2"></i>
+                                        发布视频
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.step-indicator {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.step-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 1;
+    min-width: 140px;
+}
+
+.step {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 1.2rem;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.step-label {
+    text-align: center;
+    margin-top: 8px;
+}
+
+.step-status {
+    margin-top: 4px;
+}
+
+.step-arrow {
+    font-size: 1.5rem;
+    color: #6c757d;
+    margin: 0 10px;
+}
+
+.text-success {
+    color: #198754 !important;
+}
+
+.text-warning {
+    color: #ffc107 !important;
+}
+
+.text-danger {
+    color: #dc3545 !important;
+}
+
+.spin {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.progress-bar-animated {
+    animation: progress-bar-stripes 1s linear infinite;
+}
+
+@keyframes progress-bar-stripes {
+    0% { background-position: 0 0; }
+    100% { background-position: 40px 0; }
+}
+
+@media (max-width: 768px) {
+    .step-indicator {
+        flex-direction: column;
+    }
+    
+    .step-arrow {
+        transform: rotate(90deg);
+        margin: 10px 0;
+    }
+    
+    .step-container {
+        min-width: auto;
+        width: 100%;
+    }
+}
+</style>
+
+<script>
+function videoGeneratePage() {
+    return {
+        currentStep: 1,
+        isLoading: false,
+        progress: 0,
+        
+        // 全自动工作流相关
+        isAutoRunning: false,
+        autoProgress: 0,
+        currentAutoStep: 0,
+        currentAutoStatus: '等待开始...',
+        autoAbortController: null,
+        
+        // 步骤状态和加载状态
+        stepStatus: {
+            1: null,
+            2: null,
+            3: null,
+            4: null,
+            5: null
+        },
+        stepLoading: {
+            1: false,
+            2: false,
+            3: false,
+            4: false,
+            5: false
+        },
+        
+        config: {
+            topic: '',
+            language: 'zh-CN',
+            duration: 120,
+            video: {
+                layout: 'landscape',  // 默认改为横屏
+                fps: '30',
+                size: '1280x720',
+                enable_transition: true
+            },
+            audio: {
+                type: 'remote',
+                language: 'zh-CN',
+                voice: 'aicheng',
+                speed: 'normal'
+            },
+            subtitle: {
+                enabled: true,
+                font: 'PingFang SC Regular',
+                size: 24,
+                position: 2,
+                color: '#FFFFFF',
+                border_color: '#000000',
+                border_width: 0
+            }
+        },
+        
+        results: {
+            content: null,
+            resources: null,
+            audio: null,
+            subtitle: null,
+            video: null
+        },
+        
+        getStepClass(step) {
+            if (this.stepLoading[step]) return 'active bg-warning';
+            if (step < this.currentStep) return 'completed bg-success text-white';
+            if (step === this.currentStep) return 'active bg-primary text-white';
+            return 'bg-secondary text-white';
+        },
+        
+        getStepLoading(step) {
+            return this.stepLoading[step];
+        },
+        
+        getStepStatusClass(step) {
+            const status = this.stepStatus[step];
+            if (!status) return '';
+            if (status.includes('成功') || status.includes('完成')) return 'text-success';
+            if (status.includes('进行中') || status.includes('处理中')) return 'text-warning';
+            if (status.includes('失败') || status.includes('错误')) return 'text-danger';
+            return 'text-muted';
+        },
+        
+        setStepStatus(step, status, loading = false) {
+            this.stepStatus[step] = status;
+            this.stepLoading[step] = loading;
+        },
+        
+        canStartAutoWorkflow() {
+            return this.config.topic.trim().length > 10 && !this.isAutoRunning;
+        },
+        
+        async runAutoWorkflow() {
+            if (!this.canStartAutoWorkflow()) {
+                showToast('请先输入视频主题（至少10个字符）', 'warning');
+                return;
+            }
+            
+            this.isAutoRunning = true;
+            this.autoProgress = 0;
+            this.currentAutoStep = 0;
+            this.autoAbortController = new AbortController();
+            
+            // 重置所有结果和状态
+            this.resetWorkflow(false);
+            
+            try {
+                // 步骤1: 生成内容
+                await this.autoStep1();
+                if (!this.isAutoRunning) return;
+                
+                // 步骤2: 获取资源
+                await this.autoStep2();
+                if (!this.isAutoRunning) return;
+                
+                // 步骤3: 生成音频
+                await this.autoStep3();
+                if (!this.isAutoRunning) return;
+                
+                // 步骤4: 生成字幕
+                await this.autoStep4();
+                if (!this.isAutoRunning) return;
+                
+                // 步骤5: 生成视频
+                await this.autoStep5();
+                
+                // 完成
+                this.autoProgress = 100;
+                this.currentAutoStatus = '全部完成！🎉';
+                showToast('视频生成完成！', 'success');
+                
+            } catch (error) {
+                if (error.name !== 'AbortError') {
+                    console.error('Auto workflow error:', error);
+                    this.currentAutoStatus = `错误: ${error.message}`;
+                    showToast('自动生成过程中发生错误', 'error');
+                }
+            } finally {
+                this.isAutoRunning = false;
+            }
+        },
+        
+        stopAutoWorkflow() {
+            this.isAutoRunning = false;
+            this.currentAutoStatus = '已停止';
+            if (this.autoAbortController) {
+                this.autoAbortController.abort();
+            }
+            // 停止所有步骤的加载状态
+            for (let i = 1; i <= 5; i++) {
+                this.stepLoading[i] = false;
+            }
+            showToast('自动生成已停止', 'info');
+        },
+        
+        async autoStep1() {
+            this.currentAutoStep = 1;
+            this.currentAutoStatus = '正在生成视频脚本...';
+            this.setStepStatus(1, '正在生成脚本...', true);
+            this.autoProgress = 5;
+            
+            try {
+                const response = await fetch('/api/video/generate_content', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        topic: this.config.topic,
+                        language: this.config.language,
+                        duration: this.config.duration
+                    }),
+                    signal: this.autoAbortController.signal
+                });
+                
+                if (!response.ok) throw new Error('内容生成失败');
+                
+                const result = await response.json();
+                this.results.content = result.data.content;
+                this.currentStep = Math.max(this.currentStep, 2);
+                this.autoProgress = 20;
+                this.setStepStatus(1, '脚本生成完成 ✓', false);
+                
+            } catch (error) {
+                this.setStepStatus(1, '脚本生成失败 ✗', false);
+                throw error;
+            }
+        },
+        
+        async autoStep2() {
+            this.currentAutoStep = 2;
+            this.currentAutoStatus = '正在匹配视频素材...';
+            this.setStepStatus(2, '正在获取资源...', true);
+            this.autoProgress = 25;
+            
+            try {
+                const response = await fetch('/api/video/get_resources', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        content: this.results.content
+                    }),
+                    signal: this.autoAbortController.signal
+                });
+                
+                if (!response.ok) throw new Error('资源获取失败');
+                
+                const result = await response.json();
+                this.results.resources = result.data.resources;
+                this.currentStep = Math.max(this.currentStep, 3);
+                this.autoProgress = 40;
+                this.setStepStatus(2, `资源获取完成 ✓ (${result.data.resources?.length || 0}个)`, false);
+                
+            } catch (error) {
+                this.setStepStatus(2, '资源获取失败 ✗', false);
+                throw error;
+            }
+        },
+        
+        async autoStep3() {
+            this.currentAutoStep = 3;
+            this.currentAutoStatus = '正在生成AI配音...';
+            this.setStepStatus(3, '正在合成语音...', true);
+            this.autoProgress = 45;
+            
+            try {
+                const response = await fetch('/api/video/generate_dubbing', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        content: this.results.content,
+                        audio_type: this.config.audio.type,
+                        voice: this.config.audio.voice,
+                        audio_speed: this.config.audio.speed
+                    }),
+                    signal: this.autoAbortController.signal
+                });
+                
+                if (!response.ok) throw new Error('语音合成失败');
+                
+                const result = await response.json();
+                this.results.audio = result.data;
+                this.currentStep = Math.max(this.currentStep, 4);
+                this.autoProgress = 60;
+                this.setStepStatus(3, `语音合成完成 ✓`, false);
+                
+            } catch (error) {
+                this.setStepStatus(3, '语音合成失败 ✗', false);
+                throw error;
+            }
+        },
+        
+        async autoStep4() {
+            this.currentAutoStep = 4;
+            this.currentAutoStatus = '正在生成字幕...';
+            this.setStepStatus(4, '正在生成字幕...', true);
+            this.autoProgress = 65;
+            
+            try {
+                const response = await fetch('/api/video/generate_subtitle', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        audio_file: this.results.audio?.file || '',
+                        content: this.results.content,
+                        language: this.config.language
+                    }),
+                    signal: this.autoAbortController.signal
+                });
+                
+                if (!response.ok) throw new Error('字幕生成失败');
+                
+                const result = await response.json();
+                this.results.subtitle = result.data;
+                this.currentStep = Math.max(this.currentStep, 5);
+                this.autoProgress = 80;
+                this.setStepStatus(4, '字幕生成完成 ✓', false);
+                
+            } catch (error) {
+                this.setStepStatus(4, '字幕生成失败 ✗', false);
+                throw error;
+            }
+        },
+        
+        async autoStep5() {
+            this.currentAutoStep = 5;
+            this.currentAutoStatus = '正在合成最终视频...';
+            this.setStepStatus(5, '正在合成视频...', true);
+            this.autoProgress = 85;
+            
+            try {
+                const response = await fetch('/api/video/generate_final', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        audio_file: this.results.audio?.file || '',
+                        subtitle_file: this.results.subtitle?.file || '',
+                        resources: this.results.resources || [],
+                        enable_subtitle: this.config.subtitle.enabled,
+                        video_layout: this.config.video.layout,
+                        video_fps: parseInt(this.config.video.fps),
+                        enable_transition: this.config.video.enable_transition
+                    }),
+                    signal: this.autoAbortController.signal
+                });
+                
+                if (!response.ok) throw new Error('视频合成失败');
+                
+                const result = await response.json();
+                this.results.video = result.data;
+                this.autoProgress = 100;
+                this.setStepStatus(5, '视频合成完成 ✓', false);
+                
+            } catch (error) {
+                this.setStepStatus(5, '视频合成失败 ✗', false);
+                throw error;
+            }
+        },
+        
+        async generateContent() {
+            if (!this.config.topic.trim()) {
+                showToast('请输入视频主题', 'warning');
+                return;
+            }
+            
+            this.isLoading = true;
+            this.setStepStatus(1, '正在生成脚本...', true);
+            
+            try {
+                const response = await apiRequest('/api/video/generate_content', {
+                    topic: this.config.topic,
+                    language: this.config.language,
+                    duration: this.config.duration
+                }, 'POST');
+                
+                this.results.content = response.data.content;
+                this.currentStep = Math.max(this.currentStep, 2);
+                this.setStepStatus(1, '脚本生成完成 ✓', false);
+                showToast('内容生成成功！', 'success');
+            } catch (error) {
+                this.setStepStatus(1, '脚本生成失败 ✗', false);
+                showToast('内容生成失败', 'error');
+            } finally {
+                this.isLoading = false;
+            }
+        },
+        
+        async getResources() {
+            this.isLoading = true;
+            this.setStepStatus(2, '正在获取资源...', true);
+            
+            try {
+                const response = await apiRequest('/api/video/get_resources', {
+                    content: this.results.content
+                }, 'POST');
+                
+                this.results.resources = response.data.resources;
+                this.currentStep = Math.max(this.currentStep, 3);
+                this.setStepStatus(2, `资源获取完成 ✓ (${response.data.resources?.length || 0}个)`, false);
+                showToast('资源获取成功！', 'success');
+            } catch (error) {
+                this.setStepStatus(2, '资源获取失败 ✗', false);
+                showToast('资源获取失败', 'error');
+            } finally {
+                this.isLoading = false;
+            }
+        },
+        
+        async generateAudio() {
+            this.isLoading = true;
+            this.setStepStatus(3, '正在合成语音...', true);
+            
+            try {
+                const response = await apiRequest('/api/video/generate_dubbing', {
+                    content: this.results.content,
+                    audio_type: this.config.audio.type,
+                    voice: this.config.audio.voice,
+                    audio_speed: this.config.audio.speed
+                }, 'POST');
+                
+                this.results.audio = response.data;
+                this.currentStep = Math.max(this.currentStep, 4);
+                this.setStepStatus(3, '语音合成完成 ✓', false);
+                showToast('语音合成成功！', 'success');
+            } catch (error) {
+                this.setStepStatus(3, '语音合成失败 ✗', false);
+                showToast('语音合成失败', 'error');
+            } finally {
+                this.isLoading = false;
+            }
+        },
+        
+        async generateSubtitle() {
+            this.isLoading = true;
+            this.setStepStatus(4, '正在生成字幕...', true);
+            
+            try {
+                const response = await apiRequest('/api/video/generate_subtitle', {
+                    audio_file: this.results.audio?.file || '',
+                    content: this.results.content,
+                    language: this.config.language
+                }, 'POST');
+                
+                this.results.subtitle = response.data;
+                this.currentStep = Math.max(this.currentStep, 5);
+                this.setStepStatus(4, '字幕生成完成 ✓', false);
+                showToast('字幕生成成功！', 'success');
+            } catch (error) {
+                this.setStepStatus(4, '字幕生成失败 ✗', false);
+                showToast('字幕生成失败', 'error');
+            } finally {
+                this.isLoading = false;
+            }
+        },
+        
+        async generateVideo() {
+            this.isLoading = true;
+            this.progress = 0;
+            this.setStepStatus(5, '正在合成视频...', true);
+            
+            // 模拟进度更新
+            const progressInterval = setInterval(() => {
+                if (this.progress < 90) {
+                    this.progress += Math.random() * 10;
+                }
+            }, 500);
+            
+            try {
+                const response = await apiRequest('/api/video/generate_final', {
+                    audio_file: this.results.audio?.file || '',
+                    subtitle_file: this.results.subtitle?.file || '',
+                    resources: this.results.resources || [],
+                    enable_subtitle: this.config.subtitle.enabled,
+                    video_layout: this.config.video.layout,
+                    video_fps: parseInt(this.config.video.fps),
+                    enable_transition: this.config.video.enable_transition
+                }, 'POST');
+                
+                clearInterval(progressInterval);
+                this.progress = 100;
+                
+                this.results.video = response.data;
+                this.setStepStatus(5, '视频合成完成 ✓', false);
+                showToast('视频生成完成！', 'success');
+            } catch (error) {
+                clearInterval(progressInterval);
+                this.setStepStatus(5, '视频合成失败 ✗', false);
+                showToast('视频生成失败', 'error');
+            } finally {
+                this.isLoading = false;
+            }
+        },
+        
+        async testAudio() {
+            try {
+                const response = await apiRequest('/api/video/test_audio', {
+                    text: '这是一个测试音频，用于预览语音效果',
+                    voice_config: this.config.audio
+                }, 'POST');
+                
+                if (response.data.audio_url) {
+                    const audio = new Audio(response.data.audio_url);
+                    audio.play();
+                }
+            } catch (error) {
+                showToast('语音测试失败', 'error');
+            }
+        },
+        
+        canGenerateVideo() {
+            return this.results.content && 
+                   this.results.resources && 
+                   this.results.audio && 
+                   (this.config.subtitle.enabled ? this.results.subtitle : true);
+        },
+        
+        resetWorkflow(showToastMessage = true) {
+            this.currentStep = 1;
+            this.results = {
+                content: null,
+                resources: null,
+                audio: null,
+                subtitle: null,
+                video: null
+            };
+            this.progress = 0;
+            this.autoProgress = 0;
+            this.currentAutoStep = 0;
+            this.currentAutoStatus = '等待开始...';
+            
+            // 重置步骤状态
+            for (let i = 1; i <= 5; i++) {
+                this.stepStatus[i] = null;
+                this.stepLoading[i] = false;
+            }
+            
+            if (showToastMessage) {
+                showToast('工作流已重置', 'info');
+            }
+        },
+        
+        editContent() {
+            const newContent = prompt('编辑视频脚本:', this.results.content);
+            if (newContent && newContent.trim()) {
+                this.results.content = newContent.trim();
+                showToast('内容已更新', 'success');
+            }
+        },
+        
+        shareVideo() {
+            if (navigator.share && this.results.video?.url) {
+                navigator.share({
+                    title: 'AI生成的视频',
+                    text: '使用MincodeVideos生成的AI视频',
+                    url: this.results.video.url
+                });
+            } else {
+                navigator.clipboard.writeText(this.results.video?.url || '').then(() => {
+                    showToast('视频链接已复制到剪贴板', 'success');
+                });
+            }
+        },
+        
+        updateVideoSize() {
+            const layout = this.config.video.layout;
+            if (layout === 'landscape') {
+                this.config.video.size = '1280x720';
+            } else if (layout === 'portrait') {
+                this.config.video.size = '720x1280';
+            } else { // square
+                this.config.video.size = '720x720';
+            }
+        }
+    }
+}
+</script>
+{% endblock %}

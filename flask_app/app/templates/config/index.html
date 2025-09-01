@@ -496,6 +496,26 @@ function configPage() {
                 
                 if (result.success) {
                     showToast('配置保存成功！', 'success');
+                    
+                    // 保存成功后，刷新配置以确保其他模块使用最新配置
+                    try {
+                        const reloadResponse = await fetch('/config/api/reload', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            }
+                        });
+                        
+                        const reloadResult = await reloadResponse.json();
+                        if (reloadResult.success) {
+                            console.log('配置已刷新:', reloadResult.message);
+                        } else {
+                            console.warn('配置刷新失败:', reloadResult.message);
+                        }
+                    } catch (reloadError) {
+                        console.warn('配置刷新请求失败:', reloadError);
+                    }
+                    
                 } else {
                     showToast('保存配置失败: ' + result.message, 'error');
                 }

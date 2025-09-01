@@ -40,9 +40,14 @@ class MyDeepSeekService(MyLLMService):
         must_have_value(self.DEEPSEEK_API_URL, "请设置DeepSeek Base Url")
         must_have_value(self.DEEPSEEK_MODEL_NAME, "请设置DeepSeek model")
 
-    def generate_content(self, topic: str, prompt_template: PromptTemplate, language: str = None, length: str = None):
-        # 创建自定义httpx客户端，禁用代理和环境变量检测
-        http_client = httpx.Client(proxy=None, trust_env=False)
+    def generate_content(self, topic: str, prompt_template: PromptTemplate = None, language: str = None, length: str = None):
+        # 创建自定义httpx客户端，禁用环境变量检测
+        try:
+            # 尝试使用新版本的参数
+            http_client = httpx.Client(trust_env=False)
+        except TypeError:
+            # 如果失败，使用无参数版本
+            http_client = httpx.Client()
 
         # 创建 DeepSeek 的 LLM 实例
         llm = OpenAI(
@@ -51,11 +56,17 @@ class MyDeepSeekService(MyLLMService):
             http_client=http_client
         )
 
+        # 如果没有提供prompt_template，直接使用topic作为消息内容
+        if prompt_template is None:
+            user_content = topic
+        else:
+            user_content = prompt_template.format(topic=topic, language=language, length=length)
+
         response = llm.chat.completions.create(
             model=self.DEEPSEEK_MODEL_NAME,
             messages=[
                 {"role": "system", "content": "You are a helpful assistant"},
-                {"role": "user", "content": prompt_template.format(topic=topic, language=language, length=length)},
+                {"role": "user", "content": user_content},
             ],
             stream=False
         )
@@ -63,4 +74,11 @@ class MyDeepSeekService(MyLLMService):
         # 生成视频内容描述
         description = response.choices[0].message.content
 
-        return description.strip()
+        return description.strip() if description else ""
+
+    def generate_simple_content(self, prompt: str):
+        """简单的内容生成方法，直接接受字符串提示"""
+        return self.generate_content(prompt)
+
+# 兼容旧命名
+DeepSeekService = MyDeepSeekService

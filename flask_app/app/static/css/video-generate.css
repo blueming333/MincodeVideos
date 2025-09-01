@@ -1,0 +1,384 @@
+/* 视频生成工作流样式 */
+
+/* 步骤指示器 */
+.step-indicator {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.step-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 1;
+    min-width: 140px;
+}
+
+.step {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 1.2rem;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.step-label {
+    text-align: center;
+    margin-top: 8px;
+}
+
+.step-status {
+    margin-top: 4px;
+}
+
+.step-arrow {
+    font-size: 1.5rem;
+    color: #6c757d;
+    margin: 0 10px;
+}
+
+/* 状态颜色 */
+.text-success {
+    color: #198754 !important;
+}
+
+.text-warning {
+    color: #ffc107 !important;
+}
+
+.text-danger {
+    color: #dc3545 !important;
+}
+
+/* 动画效果 */
+.spin {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.progress-bar-animated {
+    animation: progress-bar-stripes 1s linear infinite;
+}
+
+@keyframes progress-bar-stripes {
+    0% { background-position: 0 0; }
+    100% { background-position: 40px 0; }
+}
+
+/* 内容显示区域 */
+.content-display {
+    max-height: 200px;
+    overflow-y: auto;
+    background: #f8f9fa;
+    border-radius: 6px;
+    padding: 12px;
+    border: 1px solid #e9ecef;
+}
+
+/* 配置面板 */
+.config-panel {
+    position: sticky;
+    top: 20px;
+}
+
+.config-section {
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 16px;
+    background: #f8f9fa;
+}
+
+.config-section h6 {
+    color: #495057;
+    font-weight: 600;
+    margin-bottom: 12px;
+}
+
+/* 步骤卡片 */
+.workflow-step {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.workflow-step:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.step-placeholder {
+    text-align: center;
+    padding: 40px 20px;
+    color: #6c757d;
+}
+
+.step-placeholder i {
+    font-size: 3rem;
+    opacity: 0.3;
+    margin-bottom: 16px;
+}
+
+/* 资源网格 */
+.resource-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 16px;
+}
+
+.resource-card {
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    overflow: hidden;
+    transition: transform 0.2s ease;
+}
+
+.resource-card:hover {
+    transform: scale(1.05);
+}
+
+.resource-thumbnail {
+    width: 100%;
+    height: 120px;
+    object-fit: cover;
+}
+
+/* 视频播放器 */
+.video-player {
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    .step-indicator {
+        flex-direction: column;
+    }
+    
+    .step-arrow {
+        transform: rotate(90deg);
+        margin: 10px 0;
+    }
+    
+    .step-container {
+        min-width: auto;
+        width: 100%;
+    }
+    
+    .config-panel {
+        position: static;
+        margin-bottom: 24px;
+    }
+    
+    .resource-grid {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        gap: 12px;
+    }
+}
+
+@media (max-width: 576px) {
+    .step {
+        width: 40px;
+        height: 40px;
+        font-size: 1rem;
+    }
+    
+    .resource-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+/* 高分辨率显示优化 */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+    .step {
+        width: 60px;
+        height: 60px;
+        font-size: 1.4rem;
+        border: 2px solid;
+    }
+    
+    .step-arrow {
+        font-size: 1.8rem;
+    }
+    
+    .card {
+        border-width: 1px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    }
+    
+    .btn {
+        font-weight: 500;
+        letter-spacing: 0.5px;
+    }
+    
+    .card-title {
+        font-weight: 600;
+        letter-spacing: 0.3px;
+    }
+    
+    /* 更精细的图标显示 */
+    .bi {
+        font-size: 1.1em;
+    }
+    
+    .card-header .bi {
+        font-size: 1.2em;
+    }
+    
+    /* 改善文字渲染 */
+    body {
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        text-rendering: optimizeLegibility;
+    }
+    
+    /* 精细化边框和阴影 */
+    .border {
+        border-width: 0.5px !important;
+    }
+    
+    .border-bottom {
+        border-bottom-width: 0.5px !important;
+    }
+    
+    /* 高分辨率下的进度条 */
+    .progress {
+        border-radius: 8px;
+        overflow: hidden;
+    }
+    
+    .progress-bar {
+        transition: width 0.3s ease;
+    }
+    
+    /* 音频控件样式优化 */
+    audio {
+        border-radius: 6px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+    
+    /* 标签样式优化 */
+    .badge {
+        font-weight: 500;
+        letter-spacing: 0.3px;
+        padding: 0.4em 0.8em;
+    }
+}
+
+/* 超高分辨率设备优化 (4K显示器等) */
+@media (-webkit-min-device-pixel-ratio: 3), (min-resolution: 288dpi) {
+    .container-fluid {
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+    
+    .step {
+        width: 70px;
+        height: 70px;
+        font-size: 1.6rem;
+    }
+    
+    .card {
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    }
+    
+    .btn {
+        border-radius: 8px;
+        padding: 0.6rem 1.2rem;
+    }
+    
+    .card-header {
+        border-radius: 12px 12px 0 0;
+    }
+    
+    /* 更大的图标 */
+    .card-header .bi {
+        font-size: 1.4em;
+    }
+    
+    /* 改善间距 */
+    .card-body {
+        padding: 1.5rem;
+    }
+    
+    .mb-4 {
+        margin-bottom: 2rem !important;
+    }
+}
+
+/* 触摸设备优化 */
+@media (hover: none) and (pointer: coarse) {
+    .btn {
+        min-height: 44px;
+        min-width: 44px;
+    }
+    
+    .step {
+        min-width: 50px;
+        min-height: 50px;
+    }
+    
+    audio {
+        min-height: 44px;
+    }
+}
+
+/* 视频预览弹窗样式 */
+#videoPreviewModal .modal-dialog {
+    max-width: 90vw;
+}
+
+#previewVideoPlayer {
+    background: #000;
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+/* 视频信息卡片 */
+#videoPreviewModal .modal-body .row > div {
+    padding: 1rem;
+    border-radius: 8px;
+    margin: 0.25rem;
+    background: #f8f9fa;
+    transition: all 0.3s ease;
+}
+
+#videoPreviewModal .modal-body .row > div:hover {
+    background: #e9ecef;
+    transform: translateY(-2px);
+}
+
+/* 预览按钮样式优化 */
+.btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 123, 255, 0.3);
+}
+
+/* 弹窗动画优化 */
+#videoPreviewModal .modal-content {
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+}
+
+#videoPreviewModal .modal-header {
+    border-bottom: 1px solid #dee2e6;
+    border-radius: 12px 12px 0 0;
+}
+
+#videoPreviewModal .modal-footer {
+    border-top: 1px solid #dee2e6;
+    border-radius: 0 0 12px 12px;
+}

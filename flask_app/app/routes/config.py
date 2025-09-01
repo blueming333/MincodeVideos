@@ -11,76 +11,48 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(
 
 import yaml
 
+# 使用新的配置管理器
 try:
-    from config.config import my_config, save_config, languages
+    from flask_app.app.utils.config_manager import config_manager, get_config, update_config, reload_config
+    config_manager_available = True
+except ImportError as e:
+    print(f"Warning: Could not import config manager: {e}")
+    config_manager_available = False
+
+# 向后兼容的配置导入
+try:
+    from config.config import languages
     from config.config import local_audio_tts_providers, local_audio_recognition_providers
     original_config_available = True
 except ImportError as e:
     print(f"Warning: Could not import config modules: {e}")
     original_config_available = False
-
-# 如果原有配置模块不可用，提供默认配置
-if not original_config_available:
-    # 提供默认值
-    my_config = {
-        'ui': {'language': 'zh-CN'},
-        'llm': {'provider': 'OpenAI'},
-        'audio': {'provider': 'Azure'},
-        'resource': {'provider': 'pexels'},
-        'publisher': {'driver_type': 'chrome'}
-    }
     languages = {'zh-CN': '简体中文', 'en': 'English', 'ja': '日本語'}
     local_audio_tts_providers = ['chatTTS', 'GPTSoVITS', 'CosyVoice']
     local_audio_recognition_providers = ['fasterwhisper', 'sensevoice']
-    
-    def save_config():
-        # 正确计算配置文件路径  
-        current_file = os.path.abspath(__file__)
-        root_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(current_file))))
-        config_path = os.path.join(root_dir, 'config', 'config.yml')
-        try:
-            with open(config_path, 'w', encoding='utf-8') as f:
-                yaml.dump(my_config, f, default_flow_style=False, allow_unicode=True)
-            print(f"配置已保存到: {config_path}")
-        except Exception as e:
-            print(f"Error saving config: {e}")
-    
-    def test_config(*args):
-        return True
 
 bp = Blueprint('config', __name__)
 
 def load_config_file():
     """从YAML文件加载配置"""
-    global my_config
-    try:
-        # 正确计算配置文件路径
-        current_file = os.path.abspath(__file__)
-        print(f"当前文件路径: {current_file}")
-        
-        # 从flask_app/app/routes/config.py 回到根目录
-        root_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(current_file))))
-        config_path = os.path.join(root_dir, 'config', 'config.yml')
-        print(f"配置文件路径: {config_path}")
-        print(f"配置文件是否存在: {os.path.exists(config_path)}")
-        
-        if os.path.exists(config_path):
-            with open(config_path, 'r', encoding='utf-8') as f:
-                loaded_config = yaml.safe_load(f)
-                if loaded_config is not None:
-                    my_config = loaded_config
-                    print(f"成功加载配置，包含 {len(loaded_config)} 个主要配置项")
-                    print(f"配置项: {list(loaded_config.keys())}")
-                else:
-                    print("配置文件为空，使用默认配置")
-                    my_config = get_default_config()
-        else:
-            print("配置文件不存在，使用默认配置")
-            my_config = get_default_config()
-    except Exception as e:
-        print(f"Error loading config: {e}")
-        my_config = get_default_config()
-    return my_config
+    if config_manager_available:
+        return config_manager.get_config()
+    else:
+        # 向后兼容的加载方式
+        try:
+            current_file = os.path.abspath(__file__)
+            root_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(current_file))))
+            config_path = os.path.join(root_dir, 'config', 'config.yml')
+            
+            if os.path.exists(config_path):
+                with open(config_path, 'r', encoding='utf-8') as f:
+                    loaded_config = yaml.safe_load(f)
+                    return loaded_config or get_default_config()
+            else:
+                return get_default_config()
+        except Exception as e:
+            print(f"Error loading config: {e}")
+            return get_default_config()
 
 def get_default_config():
     """获取默认配置"""
@@ -142,10 +114,18 @@ def save():
         
         # 如果是完整配置对象，直接保存
         if 'config' in data:
-            global my_config
-            my_config = data['config']
-            save_config()
-            return jsonify({'success': True, 'message': '配置保存成功'})
+            new_config = data['config']
+            if config_manager_available:
+                config_manager.update_config(new_config)
+                success = config_manager.save_config()
+            else:
+                # 向后兼容的保存方式
+                success = save_config_legacy(new_config)
+                
+            if success:
+                return jsonify({'success': True, 'message': '配置保存成功'})
+            else:
+                return jsonify({'success': False, 'message': '配置保存失败'})
         
         # 如果是单个配置项
         section = data.get('section')
@@ -153,37 +133,56 @@ def save():
         value = data.get('value')
         
         if section and key:
-            # 加载当前配置
-            config = load_config_file()
+            if config_manager_available:
+                # 使用配置管理器
+                key_path = f"{section}.{key}" if key else section
+                config_manager.set(key_path, value)
+                success = config_manager.save_config()
+            else:
+                # 向后兼容方式
+                config = load_config_file()
+                if section not in config:
+                    config[section] = {}
+                
+                keys = key.split('.')
+                config_ref = config[section]
+                for k in keys[:-1]:
+                    if not isinstance(config_ref, dict):
+                        config_ref = {}
+                    if k not in config_ref:
+                        config_ref[k] = {}
+                    config_ref = config_ref[k]
+                
+                if isinstance(config_ref, dict):
+                    config_ref[keys[-1]] = value
+                
+                success = save_config_legacy(config)
             
-            # 确保配置节存在
-            if section not in config:
-                config[section] = {}
-            
-            # 处理嵌套配置
-            keys = key.split('.')
-            config_ref = config[section]
-            for k in keys[:-1]:
-                if not isinstance(config_ref, dict):
-                    config_ref = {}
-                if k not in config_ref:
-                    config_ref[k] = {}
-                config_ref = config_ref[k]
-            
-            if isinstance(config_ref, dict):
-                config_ref[keys[-1]] = value
-            
-            # 更新全局配置并保存
-            my_config = config
-            save_config()
-            
-            return jsonify({'success': True, 'message': '配置保存成功'})
+            if success:
+                return jsonify({'success': True, 'message': '配置保存成功'})
+            else:
+                return jsonify({'success': False, 'message': '配置保存失败'})
         else:
             return jsonify({'success': False, 'message': '参数错误'})
             
     except Exception as e:
         return jsonify({'success': False, 'message': f'保存失败: {str(e)}'})
 
+def save_config_legacy(config_data):
+    """向后兼容的配置保存方法"""
+    try:
+        current_file = os.path.abspath(__file__)
+        root_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(current_file))))
+        config_path = os.path.join(root_dir, 'config', 'config.yml')
+        
+        os.makedirs(os.path.dirname(config_path), exist_ok=True)
+        with open(config_path, 'w', encoding='utf-8') as f:
+            yaml.dump(config_data, f, default_flow_style=False, allow_unicode=True)
+        print(f"配置已保存到: {config_path}")
+        return True
+    except Exception as e:
+        print(f"保存配置失败: {e}")
+        return False
 @bp.route('/api/current')
 def get_current_config():
     """获取当前配置"""
@@ -192,6 +191,46 @@ def get_current_config():
         return jsonify({'success': True, 'data': config})
     except Exception as e:
         return jsonify({'success': False, 'message': f'获取配置失败: {str(e)}'})
+
+@bp.route('/api/reload', methods=['POST'])
+def reload_config_api():
+    """重新加载配置"""
+    try:
+        if config_manager_available:
+            config_manager.reload_config()
+            message = "配置已重新加载（使用配置管理器）"
+        else:
+            message = "配置已重新加载（使用传统方式）"
+        
+        return jsonify({'success': True, 'message': message})
+    except Exception as e:
+        return jsonify({'success': False, 'message': f'重新加载配置失败: {str(e)}'})
+
+@bp.route('/api/audio_voices')
+def get_audio_voices_api():
+    """获取当前音频提供商的语音选项"""
+    try:
+        if config_manager_available:
+            voices = config_manager.get_audio_voices()
+            provider = config_manager.get_audio_provider()
+        else:
+            # 向后兼容方式
+            from flask_app.app.routes.video import get_audio_voices
+            voices = get_audio_voices()
+            config = load_config_file()
+            provider = config.get('audio', {}).get('provider', 'Unknown')
+        
+        return jsonify({
+            'success': True, 
+            'data': {
+                'voices': voices,
+                'provider': provider
+            }
+        })
+    except Exception as e:
+        return jsonify({'success': False, 'message': f'获取语音选项失败: {str(e)}'})
+
+@bp.route('/test/<provider>')
 
 @bp.route('/test/<provider>')
 def test_provider(provider):

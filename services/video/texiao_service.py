@@ -47,10 +47,22 @@ def gen_filter(segments, target_width, target_height,transition_type, transition
 
         video_length += float(file_lengths[i])
         next_fade_output = "v%d%d" % (i, i + 1)
-        video_fades += f"[%s][%dv]{transition_type}=transition=%s:duration=%f:offset=%f%s%s" % \
-                       (last_fade_output, i + 1, transition_value, float(transition_duration), video_length - float(transition_duration) * (i + 1),
-                        '[' + next_fade_output + '];' if (i) < len(segments) - 2 else "",
-                        "" if i < len(segments) - 2 else ",format=yuv420p[video];")
+        
+        # 使用正确的xfade滤镜语法进行转场
+        if transition_type == 'xfade' or transition_type == 'fade':
+            # 使用xfade滤镜实现转场效果
+            # offset应该是前一个视频的总时长减去转场时长
+            offset_time = video_length - float(transition_duration)
+            video_fades += f"[%s][%dv]xfade=transition={transition_value}:duration=%f:offset=%f%s%s" % \
+                           (last_fade_output, i + 1, float(transition_duration), offset_time,
+                            '[' + next_fade_output + '];' if (i) < len(segments) - 2 else "",
+                            "" if i < len(segments) - 2 else ",format=yuv420p[video];")
+        else:
+            # 其他转场类型也使用xfade
+            video_fades += f"[%s][%dv]xfade=transition={transition_value}:duration=%f:offset=%f%s%s" % \
+                           (last_fade_output, i + 1, float(transition_duration), video_length - float(transition_duration),
+                            '[' + next_fade_output + '];' if (i) < len(segments) - 2 else "",
+                            "" if i < len(segments) - 2 else ",format=yuv420p[video];")
         last_fade_output = next_fade_output
 
         if with_audio:

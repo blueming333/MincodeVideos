@@ -1,0 +1,169 @@
+<div class="card sticky-top" style="top: 20px;">
+    <div class="card-header">
+        <h5 class="card-title mb-0">
+            <i class="bi bi-sliders me-2"></i>
+            生成配置
+        </h5>
+    </div>
+    <div class="card-body">
+        <!-- 基础配置 -->
+        <div class="mb-3">
+            <label class="form-label">视频主题</label>
+            <textarea class="form-control" rows="3" x-model="config.topic" 
+                      placeholder="请输入您想要生成的视频主题，例如：人工智能的发展历程"></textarea>
+        </div>
+        
+        <div class="row mb-3">
+            <div class="col-6">
+                <label class="form-label">视频语言</label>
+                <select class="form-select" x-model="config.language">
+                    {% for key, value in languages.items() %}
+                    <option value="{{ key }}">{{ value }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-6">
+                <label class="form-label">时长(秒)</label>
+                <input type="number" class="form-control" x-model="config.duration" 
+                       min="30" max="300" value="120">
+            </div>
+        </div>
+        
+        <!-- 视频配置 -->
+        <div class="border rounded p-3 mb-3 bg-light">
+            <h6 class="fw-bold mb-3">视频设置</h6>
+            <div class="row mb-2">
+                <div class="col-6">
+                    <label class="form-label">布局</label>
+                    <select class="form-select form-select-sm" x-model="config.video.layout" @change="updateVideoSize()">
+                        <option value="landscape">横屏 (16:9)</option>
+                        <option value="portrait">竖屏 (9:16)</option>
+                        <option value="square">方形 (1:1)</option>
+                    </select>
+                </div>
+                <div class="col-6">
+                    <label class="form-label">帧率</label>
+                    <select class="form-select form-select-sm" x-model="config.video.fps">
+                        <option value="20">20 FPS</option>
+                        <option value="25">25 FPS</option>
+                        <option value="30">30 FPS</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" x-model="config.video.enable_transition">
+                <label class="form-check-label">启用转场特效</label>
+            </div>
+        </div>
+        
+        <!-- 语音配置 -->
+        <div class="border rounded p-3 mb-3 bg-light">
+            <h6 class="fw-bold mb-3">语音设置</h6>
+            <div class="row mb-2">
+                <div class="col-6">
+                    <label class="form-label">语音类型</label>
+                    <select class="form-select form-select-sm" x-model="config.audio.type">
+                        {% for key, value in audio_types.items() %}
+                        <option value="{{ key }}">{{ value }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-6" x-show="config.audio.type === 'remote'">
+                    <label class="form-label">语音语言</label>
+                    <select class="form-select form-select-sm" x-model="config.audio.language">
+                        {% for key, value in audio_languages.items() %}
+                        <option value="{{ key }}">{{ value }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <div class="row mb-2" x-show="config.audio.type === 'remote'">
+                <div class="col-6">
+                    <label class="form-label">语音角色</label>
+                    <select class="form-select form-select-sm" x-model="config.audio.voice">
+                        {% for lang, voices in audio_voices.items() %}
+                            {% for voice_key, voice_name in voices.items() %}
+                                <option value="{{ voice_key }}" 
+                                        x-show="config.audio.language === '{{ lang }}'">
+                                    {{ voice_name }}
+                                </option>
+                            {% endfor %}
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-6">
+                    <label class="form-label">语音速度</label>
+                    <select class="form-select form-select-sm" x-model="config.audio.speed">
+                        <option value="slowest">最慢</option>
+                        <option value="slower">较慢</option>
+                        <option value="slow">慢</option>
+                        <option value="normal">正常</option>
+                        <option value="fast">快</option>
+                        <option value="faster">较快</option>
+                        <option value="fastest">最快</option>
+                    </select>
+                </div>
+            </div>
+            <button class="btn btn-outline-primary btn-sm w-100" @click="testAudio()">
+                <i class="bi bi-volume-up me-1"></i>
+                试听语音
+            </button>
+        </div>
+        
+        <!-- 字幕配置 -->
+        <div class="border rounded p-3 bg-light">
+            <h6 class="fw-bold mb-3">字幕设置</h6>
+            <div class="form-check mb-2">
+                <input class="form-check-input" type="checkbox" x-model="config.subtitle.enabled" checked>
+                <label class="form-check-label">启用字幕</label>
+            </div>
+            <div class="row mb-2" x-show="config.subtitle.enabled">
+                <div class="col-6">
+                    <label class="form-label">字体</label>
+                    <select class="form-select form-select-sm" x-model="config.subtitle.font">
+                        {% for font in subtitle_fonts %}
+                        <option value="{{ font }}">{{ font }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-6">
+                    <label class="form-label">大小</label>
+                    <select class="form-select form-select-sm" x-model="config.subtitle.size">
+                        <option value="16">16</option>
+                        <option value="18">18</option>
+                        <option value="20">20</option>
+                        <option value="22">22</option>
+                        <option value="24">24</option>
+                        <option value="28">28</option>
+                        <option value="32">32</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row mb-2" x-show="config.subtitle.enabled">
+                <div class="col-4">
+                    <label class="form-label">位置</label>
+                    <select class="form-select form-select-sm" x-model="config.subtitle.position">
+                        {% for key, value in subtitle_positions.items() %}
+                        <option value="{{ key }}">{{ value }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-4">
+                    <label class="form-label">颜色</label>
+                    <input type="color" class="form-control form-control-color form-control-sm" 
+                           x-model="config.subtitle.color">
+                </div>
+                <div class="col-4">
+                    <label class="form-label">边框</label>
+                    <select class="form-select form-select-sm" x-model="config.subtitle.border_width">
+                        <option value="0">无边框</option>
+                        <option value="1">1px</option>
+                        <option value="2">2px</option>
+                        <option value="3">3px</option>
+                        <option value="4">4px</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
