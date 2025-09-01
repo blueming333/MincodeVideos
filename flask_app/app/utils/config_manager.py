@@ -10,7 +10,8 @@ from typing import Dict, Any, Optional
 
 # 添加项目根目录到Python路径
 current_dir = os.path.dirname(os.path.abspath(__file__))
-project_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(current_dir))))
+# 从 flask_app/app/utils 目录向上3级到达项目根目录 MincodeVideos
+project_root = os.path.dirname(os.path.dirname(os.path.dirname(current_dir)))
 sys.path.insert(0, project_root)
 
 

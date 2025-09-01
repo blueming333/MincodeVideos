@@ -41,7 +41,8 @@ def load_config_file():
         # 向后兼容的加载方式
         try:
             current_file = os.path.abspath(__file__)
-            root_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(current_file))))
+            # 从 flask_app/app/routes 目录向上3级到达项目根目录 MincodeVideos
+            root_dir = os.path.dirname(os.path.dirname(os.path.dirname(current_file)))
             config_path = os.path.join(root_dir, 'config', 'config.yml')
             
             if os.path.exists(config_path):
