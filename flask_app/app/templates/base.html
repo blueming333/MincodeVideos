@@ -262,6 +262,10 @@
                 <i class="bi bi-grid-3x3-gap-fill me-2"></i>
                 <span data-i18n="Gallery">{{ _('Gallery') }}</span>
             </a>
+            <a href="{{ url_for('material.search') }}" class="nav-link {% if request.endpoint == 'material.search' %}active{% endif %}">
+                <i class="bi bi-search me-2"></i>
+                <span data-i18n="Material Search">{{ _('Material Search') }}</span>
+            </a>
             <a href="{{ url_for('publish.batch') }}" class="nav-link {% if request.endpoint == 'publish.batch' %}active{% endif %}">
                 <i class="bi bi-cloud-upload-fill me-2"></i>
                 <span data-i18n="Batch Publish">{{ _('Batch Publish') }}</span>
@@ -301,7 +305,12 @@
     </div>
     
     <!-- 主内容区域 -->
-    <div class="flex-grow-1 p-4">
+    <div class="flex-grow-1 p-4 position-relative">
+        <!-- 右上角语言切换菜单 -->
+        <div class="position-absolute top-0 end-0 m-3" style="z-index: 1000;">
+            {% include 'components/language-menu.html' %}
+        </div>
+        
         <div class="main-content h-100 p-4">
             {% block content %}{% endblock %}
         </div>

@@ -1,0 +1,182 @@
+<!-- 右上角语言切换菜单 -->
+<div class="language-menu" x-data="languageMenu()">
+    <div class="dropdown">
+        <button class="btn btn-outline-light btn-sm dropdown-toggle d-flex align-items-center" 
+                type="button" 
+                id="languageMenuDropdown" 
+                data-bs-toggle="dropdown" 
+                aria-expanded="false">
+            <i class="bi bi-globe me-2"></i>
+            <span x-text="currentLocale.code.toUpperCase()"></span>
+        </button>
+        <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="languageMenuDropdown">
+            <li class="dropdown-header">
+                <i class="bi bi-translate me-2"></i>
+                <span data-i18n="Choose Language">Choose Language</span>
+            </li>
+            <li><hr class="dropdown-divider"></li>
+            <template x-for="locale in availableLocales" :key="locale.code">
+                <li>
+                    <button class="dropdown-item d-flex align-items-center py-2" 
+                            @click="changeLanguage(locale.code)"
+                            :class="{ 'active bg-primary text-white': locale.code === currentLocale.code }">
+                        <div class="flex-grow-1">
+                            <div class="fw-semibold" x-text="locale.nativeName"></div>
+                            <small class="text-muted" x-text="locale.name" 
+                                   :class="{ 'text-white-50': locale.code === currentLocale.code }"></small>
+                        </div>
+                        <i class="bi bi-check ms-2" 
+                           x-show="locale.code === currentLocale.code"></i>
+                    </button>
+                </li>
+            </template>
+            <li><hr class="dropdown-divider"></li>
+            <li>
+                <div class="dropdown-item-text">
+                    <small class="text-muted">
+                        <i class="bi bi-info-circle me-1"></i>
+                        <span data-i18n="Language preference will be saved">Language preference will be saved</span>
+                    </small>
+                </div>
+            </li>
+        </ul>
+    </div>
+</div>
+
+<script>
+function languageMenu() {
+    return {
+        currentLocale: { code: 'en', name: 'English', nativeName: 'English' },
+        availableLocales: [
+            { code: 'en', name: 'English', nativeName: 'English' },
+            { code: 'zh-CN', name: 'Chinese (Simplified)', nativeName: '简体中文' }
+        ],
+        
+        init() {
+            this.loadCurrentLocale();
+            
+            // 监听语言切换事件
+            document.addEventListener('localeChanged', (event) => {
+                this.currentLocale = this.availableLocales.find(
+                    l => l.code === event.detail.locale
+                ) || this.currentLocale;
+            });
+        },
+        
+        async loadCurrentLocale() {
+            if (window.i18n) {
+                this.currentLocale = window.i18n.getAvailableLocales().find(
+                    l => l.code === window.i18n.getCurrentLocale()
+                ) || this.currentLocale;
+                this.availableLocales = window.i18n.getAvailableLocales();
+            }
+        },
+        
+        async changeLanguage(locale) {
+            if (window.i18n && locale !== this.currentLocale.code) {
+                // 显示加载状态
+                this.showLoadingToast();
+                
+                const success = await window.i18n.setLocale(locale);
+                if (success) {
+                    this.showSuccessToast();
+                    
+                    // 1秒后刷新页面以确保所有内容都更新
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 1000);
+                } else {
+                    this.showErrorToast();
+                }
+            }
+        },
+        
+        showLoadingToast() {
+            this.showToast('info', window.i18n?.t('Switching language...') || 'Switching language...', 2000);
+        },
+        
+        showSuccessToast() {
+            this.showToast('success', window.i18n?.t('Language changed successfully') || 'Language changed successfully', 3000);
+        },
+        
+        showErrorToast() {
+            this.showToast('error', 'Failed to change language', 3000);
+        },
+        
+        showToast(type, message, duration = 3000) {
+            const toastColors = {
+                'info': 'alert-info',
+                'success': 'alert-success', 
+                'error': 'alert-danger'
+            };
+            
+            const toastIcons = {
+                'info': 'bi-info-circle',
+                'success': 'bi-check-circle',
+                'error': 'bi-exclamation-triangle'
+            };
+            
+            const toast = document.createElement('div');
+            toast.className = `alert ${toastColors[type]} alert-dismissible fade show position-fixed`;
+            toast.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);';
+            toast.innerHTML = `
+                <div class="d-flex align-items-center">
+                    <i class="bi ${toastIcons[type]} me-2"></i>
+                    <div class="flex-grow-1">${message}</div>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            `;
+            document.body.appendChild(toast);
+            
+            // 自动移除
+            setTimeout(() => {
+                if (toast.parentNode) {
+                    toast.remove();
+                }
+            }, duration);
+        }
+    }
+}
+</script>
+
+<style>
+.language-menu .dropdown-toggle {
+    min-width: 70px;
+    font-size: 0.875rem;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+}
+
+.language-menu .dropdown-toggle:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+.language-menu .dropdown-menu {
+    border: none;
+    border-radius: 8px;
+    min-width: 200px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.language-menu .dropdown-item {
+    border-radius: 6px;
+    margin: 2px 8px;
+    transition: all 0.2s ease;
+}
+
+.language-menu .dropdown-item:hover {
+    background-color: var(--bs-primary);
+    color: white;
+}
+
+.language-menu .dropdown-item.active {
+    background-color: var(--bs-primary) !important;
+    color: white !important;
+}
+
+.language-menu .dropdown-header {
+    font-weight: 600;
+    color: var(--bs-primary);
+}
+</style>

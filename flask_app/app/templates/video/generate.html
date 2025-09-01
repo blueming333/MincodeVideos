@@ -33,8 +33,12 @@
 {% endblock %}
 
 {% block extra_js %}
+<script type="text/javascript">
+// 传递后端数据到前端
+window.audioVoicesData = {{ audio_voices | tojson | safe }};
+</script>
 <script src="{{ url_for('static', filename='js/video-generate.js') }}"></script>
-<script>
+<script type="text/javascript">
 // 初始化应用
 document.addEventListener('DOMContentLoaded', function() {
     console.log('页面初始化开始');

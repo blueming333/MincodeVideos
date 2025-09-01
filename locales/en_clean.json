@@ -7,7 +7,6 @@
   "Video Mixing": "Video Mixing",
   "Video Merge": "Video Merge", 
   "Gallery": "Gallery",
-  "Material Search": "Material Search",
   "Batch Publish": "Batch Publish",
   "System Settings": "System Settings",
   "Production Version": "Production Version",
@@ -116,6 +115,7 @@
   
   "Base Config": "Base Config",
   "Mix Video": "Mix Video",
+  "Material Search": "Material Search",
   
   "Video Subject": "Video Subject (comma separated)",
   "Please input video subject, then click the generate button to generate the video content": "Please input your video subject, then click the generate button to generate the video content",
@@ -130,35 +130,5 @@
   "API Key": "API Key",
   "Group ID": "Group ID",
   "Base URL": "Base URL",
-  "Model": "Model Version",
-  
-  "Content Generation": "Content Generation",
-  "Keyword Generation": "Keyword Generation", 
-  "Resource Acquisition": "Resource Acquisition",
-  "Speech Synthesis": "Speech Synthesis",
-  "Subtitle Generation": "Subtitle Generation",
-  "Video Composition": "Video Composition",
-  "AI generated video script": "AI generated video script",
-  "Extract visual keywords": "Extract visual keywords", 
-  "Match video materials": "Match video materials",
-  "Generate AI dubbing": "Generate AI dubbing",
-  "Auto generate subtitles": "Auto generate subtitles",
-  "Final video generation": "Final video generation",
-  
-  "Search and download video materials from various providers": "Search and download video materials from various providers",
-  "Enter keywords to search videos...": "Enter keywords to search videos...",
-  "Configuration Required": "Configuration Required",
-  "Please configure API keys in config/config.yml": "Please configure API keys in config/config.yml",
-  "Search results": "Search results",
-  "Clear Results": "Clear Results",
-  "Downloading...": "Downloading...",
-  "No results found": "No results found",
-  "Try different keywords or check your API configuration": "Try different keywords or check your API configuration",
-  "How to Use": "How to Use",
-  "Configure API keys in config.yml": "Configure API keys in config/config.yml:",
-  "Supported Providers": "Supported Providers",
-  "High-quality free videos": "High-quality free videos",
-  "Rich free video resources": "Rich free video resources",
-  "English keywords work better": "English keywords work better",
-  "Downloaded files saved in work/downloads/": "Downloaded files saved in work/downloads/"
+  "Model": "Model Version"
 }

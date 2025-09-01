@@ -139,6 +139,19 @@ function videoGeneratePage() {
         init() {
             console.log('视频生成页面已初始化');
             this.updateVideoSize();
+            this.setupDefaultVoice();
+        },
+        
+        // 设置默认语音
+        setupDefaultVoice() {
+            const availableVoices = this.getAvailableVoices();
+            if (availableVoices.length > 0) {
+                // 检查当前设置的语音是否在当前语言的选项中
+                const currentVoiceExists = availableVoices.some(([voiceKey]) => voiceKey === this.config.audio.voice);
+                if (!currentVoiceExists) {
+                    this.config.audio.voice = availableVoices[0][0]; // 设置为第一个可用语音
+                }
+            }
         },
         
         // 步骤状态方法
@@ -188,6 +201,27 @@ function videoGeneratePage() {
                 this.config.video.size = '720x1280';
             } else { // square
                 this.config.video.size = '720x720';
+            }
+        },
+        
+        // 获取当前语言可用的语音选项
+        getAvailableVoices() {
+            const audioVoices = window.audioVoicesData || {};
+            const currentLanguage = this.config.audio.language || 'zh-CN';
+            const languageVoices = audioVoices[currentLanguage] || {};
+            
+            return Object.entries(languageVoices);
+        },
+        
+        // 当语言改变时更新语音选项
+        onLanguageChange() {
+            const availableVoices = this.getAvailableVoices();
+            if (availableVoices.length > 0) {
+                // 如果当前选择的语音不在新语言的选项中，选择第一个可用的语音
+                const currentVoiceExists = availableVoices.some(([voiceKey]) => voiceKey === this.config.audio.voice);
+                if (!currentVoiceExists) {
+                    this.config.audio.voice = availableVoices[0][0]; // 设置为第一个可用语音
+                }
             }
         },
         

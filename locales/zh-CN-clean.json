@@ -7,7 +7,6 @@
   "Video Mixing": "视频混剪",
   "Video Merge": "视频合并",
   "Gallery": "作品展示",
-  "Material Search": "素材搜索",
   "Batch Publish": "批量发布",
   "System Settings": "系统设置",
   "Production Version": "运营版本",
@@ -116,6 +115,7 @@
   
   "Base Config": "基本配置",
   "Mix Video": "混剪视频",
+  "Material Search": "素材搜索",
   
   "Video Subject": "视频主题（用逗号分隔）",
   "Please input video subject, then click the generate button to generate the video content": "请输入视频主题，然后点击生成按钮来生成视频内容",
@@ -130,35 +130,5 @@
   "API Key": "API密钥",
   "Group ID": "群组ID", 
   "Base URL": "基础URL",
-  "Model": "模型版本",
-  
-  "Content Generation": "内容生成",
-  "Keyword Generation": "关键词生成",
-  "Resource Acquisition": "资源获取", 
-  "Speech Synthesis": "语音合成",
-  "Subtitle Generation": "字幕生成",
-  "Video Composition": "视频合成",
-  "AI generated video script": "AI生成视频脚本",
-  "Extract visual keywords": "提取视觉关键词",
-  "Match video materials": "匹配视频素材", 
-  "Generate AI dubbing": "生成AI配音",
-  "Auto generate subtitles": "自动生成字幕",
-  "Final video generation": "最终视频生成",
-  
-  "Search and download video materials from various providers": "从多个平台搜索和下载视频素材",
-  "Enter keywords to search videos...": "输入关键词搜索视频...",
-  "Configuration Required": "需要配置",
-  "Please configure API keys in config/config.yml": "请在 config/config.yml 中配置API密钥",
-  "Search results": "搜索结果",
-  "Clear Results": "清除结果",
-  "Downloading...": "下载中...",
-  "No results found": "未找到结果",
-  "Try different keywords or check your API configuration": "尝试不同的关键词或检查API配置",
-  "How to Use": "使用说明",
-  "Configure API keys in config.yml": "在 config/config.yml 中配置API密钥：",
-  "Supported Providers": "支持的平台",
-  "High-quality free videos": "高质量免费视频",
-  "Rich free video resources": "丰富的免费视频资源",
-  "English keywords work better": "英文关键词效果更好",
-  "Downloaded files saved in work/downloads/": "下载的文件保存在 work/downloads/"
+  "Model": "模型版本"
 }

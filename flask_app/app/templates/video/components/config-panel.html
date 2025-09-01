@@ -2,20 +2,21 @@
     <div class="card-header">
         <h5 class="card-title mb-0">
             <i class="bi bi-sliders me-2"></i>
-            生成配置
+            <span data-i18n="Generation Configuration">{{ _('Generation Configuration') }}</span>
         </h5>
     </div>
     <div class="card-body">
         <!-- 基础配置 -->
         <div class="mb-3">
-            <label class="form-label">视频主题</label>
+            <label class="form-label" data-i18n="Video Topic">{{ _('Video Topic') }}</label>
             <textarea class="form-control" rows="3" x-model="config.topic" 
-                      placeholder="请输入您想要生成的视频主题，例如：人工智能的发展历程"></textarea>
+                      data-i18n="Please enter your video topic, for example: The development history of artificial intelligence"
+                      placeholder="{{ _('Please enter your video topic, for example: The development history of artificial intelligence') }}"></textarea>
         </div>
         
         <div class="row mb-3">
             <div class="col-6">
-                <label class="form-label">视频语言</label>
+                <label class="form-label" data-i18n="Video Language">{{ _('Video Language') }}</label>
                 <select class="form-select" x-model="config.language">
                     {% for key, value in languages.items() %}
                     <option value="{{ key }}">{{ value }}</option>
@@ -23,7 +24,7 @@
                 </select>
             </div>
             <div class="col-6">
-                <label class="form-label">时长(秒)</label>
+                <label class="form-label" data-i18n="Duration (seconds)">{{ _('Duration (seconds)') }}</label>
                 <input type="number" class="form-control" x-model="config.duration" 
                        min="30" max="300" value="120">
             </div>
@@ -31,18 +32,18 @@
         
         <!-- 视频配置 -->
         <div class="border rounded p-3 mb-3 bg-light">
-            <h6 class="fw-bold mb-3">视频设置</h6>
+            <h6 class="fw-bold mb-3" data-i18n="Video Settings">{{ _('Video Settings') }}</h6>
             <div class="row mb-2">
                 <div class="col-6">
-                    <label class="form-label">布局</label>
+                    <label class="form-label" data-i18n="Layout">{{ _('Layout') }}</label>
                     <select class="form-select form-select-sm" x-model="config.video.layout" @change="updateVideoSize()">
-                        <option value="landscape">横屏 (16:9)</option>
-                        <option value="portrait">竖屏 (9:16)</option>
-                        <option value="square">方形 (1:1)</option>
+                        <option value="landscape" data-i18n="Landscape (16:9)">{{ _('Landscape (16:9)') }}</option>
+                        <option value="portrait" data-i18n="Portrait (9:16)">{{ _('Portrait (9:16)') }}</option>
+                        <option value="square" data-i18n="Square (1:1)">{{ _('Square (1:1)') }}</option>
                     </select>
                 </div>
                 <div class="col-6">
-                    <label class="form-label">帧率</label>
+                    <label class="form-label" data-i18n="Frame Rate">{{ _('Frame Rate') }}</label>
                     <select class="form-select form-select-sm" x-model="config.video.fps">
                         <option value="20">20 FPS</option>
                         <option value="25">25 FPS</option>
@@ -52,16 +53,16 @@
             </div>
             <div class="form-check">
                 <input class="form-check-input" type="checkbox" x-model="config.video.enable_transition">
-                <label class="form-check-label">启用转场特效</label>
+                <label class="form-check-label" data-i18n="Enable Transition Effects">{{ _('Enable Transition Effects') }}</label>
             </div>
         </div>
         
         <!-- 语音配置 -->
         <div class="border rounded p-3 mb-3 bg-light">
-            <h6 class="fw-bold mb-3">语音设置</h6>
+            <h6 class="fw-bold mb-3" data-i18n="Audio Settings">{{ _('Audio Settings') }}</h6>
             <div class="row mb-2">
                 <div class="col-6">
-                    <label class="form-label">语音类型</label>
+                    <label class="form-label" data-i18n="Voice Type">{{ _('Voice Type') }}</label>
                     <select class="form-select form-select-sm" x-model="config.audio.type">
                         {% for key, value in audio_types.items() %}
                         <option value="{{ key }}">{{ value }}</option>
@@ -69,8 +70,8 @@
                     </select>
                 </div>
                 <div class="col-6" x-show="config.audio.type === 'remote'">
-                    <label class="form-label">语音语言</label>
-                    <select class="form-select form-select-sm" x-model="config.audio.language">
+                    <label class="form-label" data-i18n="Voice Language">{{ _('Voice Language') }}</label>
+                    <select class="form-select form-select-sm" x-model="config.audio.language" @change="onLanguageChange()">
                         {% for key, value in audio_languages.items() %}
                         <option value="{{ key }}">{{ value }}</option>
                         {% endfor %}
@@ -79,47 +80,42 @@
             </div>
             <div class="row mb-2" x-show="config.audio.type === 'remote'">
                 <div class="col-6">
-                    <label class="form-label">语音角色</label>
+                    <label class="form-label" data-i18n="Voice Role">{{ _('Voice Role') }}</label>
                     <select class="form-select form-select-sm" x-model="config.audio.voice">
-                        {% for lang, voices in audio_voices.items() %}
-                            {% for voice_key, voice_name in voices.items() %}
-                                <option value="{{ voice_key }}" 
-                                        x-show="config.audio.language === '{{ lang }}'">
-                                    {{ voice_name }}
-                                </option>
-                            {% endfor %}
-                        {% endfor %}
+                        <template x-for="[voiceKey, voiceName] in getAvailableVoices()" :key="voiceKey">
+                            <option :value="voiceKey" x-text="voiceName"></option>
+                        </template>
                     </select>
                 </div>
                 <div class="col-6">
-                    <label class="form-label">语音速度</label>
+                    <label class="form-label" data-i18n="Voice Speed">{{ _('Voice Speed') }}</label>
                     <select class="form-select form-select-sm" x-model="config.audio.speed">
-                        <option value="slowest">最慢</option>
-                        <option value="slower">较慢</option>
-                        <option value="slow">慢</option>
-                        <option value="normal">正常</option>
-                        <option value="fast">快</option>
-                        <option value="faster">较快</option>
-                        <option value="fastest">最快</option>
+                        <option value="slowest" data-i18n="Slowest">{{ _('Slowest') }}</option>
+                        <option value="slower" data-i18n="Slower">{{ _('Slower') }}</option>
+                        <option value="slow" data-i18n="Slow">{{ _('Slow') }}</option>
+                        <option value="normal" data-i18n="Normal">{{ _('Normal') }}</option>
+                        <option value="fast" data-i18n="Fast">{{ _('Fast') }}</option>
+                        <option value="faster" data-i18n="Faster">{{ _('Faster') }}</option>
+                        <option value="fastest" data-i18n="Fastest">{{ _('Fastest') }}</option>
                     </select>
                 </div>
             </div>
             <button class="btn btn-outline-primary btn-sm w-100" @click="testAudio()">
                 <i class="bi bi-volume-up me-1"></i>
-                试听语音
+                <span data-i18n="Test Voice">{{ _('Test Voice') }}</span>
             </button>
         </div>
         
         <!-- 字幕配置 -->
         <div class="border rounded p-3 bg-light">
-            <h6 class="fw-bold mb-3">字幕设置</h6>
+            <h6 class="fw-bold mb-3" data-i18n="Subtitle Settings">{{ _('Subtitle Settings') }}</h6>
             <div class="form-check mb-2">
                 <input class="form-check-input" type="checkbox" x-model="config.subtitle.enabled" checked>
-                <label class="form-check-label">启用字幕</label>
+                <label class="form-check-label" data-i18n="Enable Subtitles">{{ _('Enable Subtitles') }}</label>
             </div>
             <div class="row mb-2" x-show="config.subtitle.enabled">
                 <div class="col-6">
-                    <label class="form-label">字体</label>
+                    <label class="form-label" data-i18n="Font">{{ _('Font') }}</label>
                     <select class="form-select form-select-sm" x-model="config.subtitle.font">
                         {% for font in subtitle_fonts %}
                         <option value="{{ font }}">{{ font }}</option>
@@ -127,7 +123,7 @@
                     </select>
                 </div>
                 <div class="col-6">
-                    <label class="form-label">大小</label>
+                    <label class="form-label" data-i18n="Size">{{ _('Size') }}</label>
                     <select class="form-select form-select-sm" x-model="config.subtitle.size">
                         <option value="16">16</option>
                         <option value="18">18</option>
@@ -141,7 +137,7 @@
             </div>
             <div class="row mb-2" x-show="config.subtitle.enabled">
                 <div class="col-4">
-                    <label class="form-label">位置</label>
+                    <label class="form-label" data-i18n="Position">{{ _('Position') }}</label>
                     <select class="form-select form-select-sm" x-model="config.subtitle.position">
                         {% for key, value in subtitle_positions.items() %}
                         <option value="{{ key }}">{{ value }}</option>
@@ -149,14 +145,14 @@
                     </select>
                 </div>
                 <div class="col-4">
-                    <label class="form-label">颜色</label>
+                    <label class="form-label" data-i18n="Color">{{ _('Color') }}</label>
                     <input type="color" class="form-control form-control-color form-control-sm" 
                            x-model="config.subtitle.color">
                 </div>
                 <div class="col-4">
-                    <label class="form-label">边框</label>
+                    <label class="form-label" data-i18n="Border">{{ _('Border') }}</label>
                     <select class="form-select form-select-sm" x-model="config.subtitle.border_width">
-                        <option value="0">无边框</option>
+                        <option value="0" data-i18n="No Border">{{ _('No Border') }}</option>
                         <option value="1">1px</option>
                         <option value="2">2px</option>
                         <option value="3">3px</option>

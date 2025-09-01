@@ -25,7 +25,7 @@ def create_app():
     i18n.init_app(app)
     
     # 注册蓝图
-    from .routes import main, config, video, gallery, mix, publish
+    from .routes import main, config, video, gallery, mix, publish, material
     from .routes.video_api import video_api
     from .routes.i18n_api import i18n_api
     
@@ -37,5 +37,6 @@ def create_app():
     app.register_blueprint(gallery.bp, url_prefix='/gallery')
     app.register_blueprint(mix.bp, url_prefix='/mix')
     app.register_blueprint(publish.bp, url_prefix='/publish')
+    app.register_blueprint(material.bp, url_prefix='/material')
     
     return app

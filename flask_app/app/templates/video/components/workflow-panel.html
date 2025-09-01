@@ -1,35 +1,35 @@
 <!-- 步骤1: 内容生成 -->
 <div class="card mb-4" x-show="currentStep >= 1">
     <div class="card-header d-flex justify-content-between align-items-center">
-        <h5 class="card-title mb-0">
+        <h5 class="card-title mb-0" data-i18n="Step 1: Content Generation">
             <i class="bi bi-file-text me-2"></i>
-            步骤1: 内容生成
+            {{ _('Step 1: Content Generation') }}
         </h5>
         <button class="btn btn-primary" @click="generateContent()" 
                 :disabled="isLoading || isAutoRunning" x-show="!results.content">
             <span x-show="!isLoading">
-                <i class="bi bi-magic me-2"></i>生成内容
+                <i class="bi bi-magic me-2"></i><span data-i18n="Generate Content">{{ _('Generate Content') }}</span>
             </span>
             <span x-show="isLoading">
-                <i class="bi bi-arrow-repeat spin me-2"></i>生成中...
+                <i class="bi bi-arrow-repeat spin me-2"></i><span data-i18n="Generating...">{{ _('Generating...') }}</span>
             </span>
         </button>
     </div>
     <div class="card-body">
         <div x-show="!results.content && !isLoading" class="text-center text-muted py-4">
             <i class="bi bi-file-text" style="font-size: 3rem; opacity: 0.3;"></i>
-            <p class="mt-2">点击"生成内容"开始AI脚本创作</p>
+            <p class="mt-2" data-i18n="Click Generate Content to start AI script creation">{{ _('Click "Generate Content" to start AI script creation') }}</p>
         </div>
         
         <div x-show="results.content" class="border rounded p-3 bg-light">
-            <h6 class="fw-bold mb-2">生成的视频脚本:</h6>
+            <h6 class="fw-bold mb-2" data-i18n="Generated Video Script">{{ _('Generated Video Script:') }}</h6>
             <div class="content-display" style="max-height: 200px; overflow-y: auto;">
                 <p x-text="results.content" class="mb-0"></p>
             </div>
             <div class="d-flex justify-content-between mt-3">
-                <small class="text-muted">字数: <span x-text="results.content?.length || 0"></span></small>
+                <small class="text-muted"><span data-i18n="Word Count">{{ _('Word Count:') }}</span> <span x-text="results.content?.length || 0"></span></small>
                 <button class="btn btn-outline-secondary btn-sm" @click="editContent()">
-                    <i class="bi bi-pencil me-1"></i>编辑
+                    <i class="bi bi-pencil me-1"></i><span data-i18n="Edit">{{ _('Edit') }}</span>
                 </button>
             </div>
         </div>
@@ -39,35 +39,35 @@
 <!-- 步骤2: 关键词生成 -->
 <div class="card mb-4" x-show="currentStep >= 2">
     <div class="card-header d-flex justify-content-between align-items-center">
-        <h5 class="card-title mb-0">
+        <h5 class="card-title mb-0" data-i18n="Step 2: Keyword Generation">
             <i class="bi bi-tags me-2"></i>
-            步骤2: 关键词生成
+            {{ _('Step 2: Keyword Generation') }}
         </h5>
         <button class="btn btn-info" @click="generateKeywords()" 
                 :disabled="!results.content || isLoading || isAutoRunning" x-show="!results.keywords">
             <span x-show="!isLoading">
-                <i class="bi bi-tags me-2"></i>生成关键词
+                <i class="bi bi-tags me-2"></i><span data-i18n="Generate Keywords">{{ _('Generate Keywords') }}</span>
             </span>
             <span x-show="isLoading">
-                <i class="bi bi-arrow-repeat spin me-2"></i>生成中...
+                <i class="bi bi-arrow-repeat spin me-2"></i><span data-i18n="Generating...">{{ _('Generating...') }}</span>
             </span>
         </button>
     </div>
     <div class="card-body">
         <div x-show="!results.keywords && !isLoading" class="text-center text-muted py-4">
             <i class="bi bi-tags" style="font-size: 3rem; opacity: 0.3;"></i>
-            <p class="mt-2">等待生成视觉关键词</p>
+            <p class="mt-2" data-i18n="Waiting to generate visual keywords">{{ _('Waiting to generate visual keywords') }}</p>
         </div>
         
         <div x-show="results.keywords" class="border rounded p-3 bg-light">
-            <h6 class="fw-bold mb-2">生成的关键词:</h6>
+            <h6 class="fw-bold mb-2" data-i18n="Generated Keywords">{{ _('Generated Keywords:') }}</h6>
             <div class="d-flex flex-wrap gap-2">
                 <template x-for="keyword in results.keywords" :key="keyword">
                     <span class="badge bg-primary" x-text="keyword"></span>
                 </template>
             </div>
             <div class="mt-3">
-                <small class="text-muted">共 <span x-text="results.keywords?.length || 0"></span> 个关键词</small>
+                <small class="text-muted"><span data-i18n="Total Keywords">{{ _('Total') }}</span> <span x-text="results.keywords?.length || 0"></span> <span data-i18n="keywords">{{ _('keywords') }}</span></small>
             </div>
         </div>
     </div>
@@ -76,41 +76,41 @@
 <!-- 步骤3: 资源获取 -->
 <div class="card mb-4" x-show="currentStep >= 3">
     <div class="card-header d-flex justify-content-between align-items-center">
-        <h5 class="card-title mb-0">
+        <h5 class="card-title mb-0" data-i18n="Step 3: Resource Acquisition">
             <i class="bi bi-images me-2"></i>
-            步骤3: 资源获取
+            {{ _('Step 3: Resource Acquisition') }}
         </h5>
         <button class="btn btn-success" @click="getResources()" 
                 :disabled="!results.keywords || isLoading || isAutoRunning" x-show="!results.resources">
             <span x-show="!isLoading">
-                <i class="bi bi-download me-2"></i>获取资源
+                <i class="bi bi-download me-2"></i><span data-i18n="Get Resources">{{ _('Get Resources') }}</span>
             </span>
             <span x-show="isLoading">
-                <i class="bi bi-arrow-repeat spin me-2"></i>获取中...
+                <i class="bi bi-arrow-repeat spin me-2"></i><span data-i18n="Getting...">{{ _('Getting...') }}</span>
             </span>
         </button>
     </div>
     <div class="card-body">
         <div x-show="!results.resources && !isLoading" class="text-center text-muted py-4">
             <i class="bi bi-images" style="font-size: 3rem; opacity: 0.3;"></i>
-            <p class="mt-2">等待获取视频素材</p>
+            <p class="mt-2" data-i18n="Waiting to get video materials">{{ _('Waiting to get video materials') }}</p>
         </div>
         
         <div x-show="results.resources" class="border rounded p-3 bg-light">
-            <h6 class="fw-bold mb-2">获取的视频资源:</h6>
+            <h6 class="fw-bold mb-2" data-i18n="Acquired Video Resources">{{ _('Acquired Video Resources:') }}</h6>
             <div class="resource-list" style="max-height: 200px; overflow-y: auto;">
                 <template x-for="(resource, index) in results.resources" :key="resource.id">
                     <div class="d-flex align-items-center justify-content-between py-2 border-bottom">
                         <div>
                             <h6 class="mb-0" x-text="resource.title"></h6>
-                            <small class="text-muted">时长: <span x-text="resource.duration"></span>秒 | 关键词: <span x-text="resource.keyword"></span></small>
+                            <small class="text-muted"><span data-i18n="Duration">{{ _('Duration:') }}</span> <span x-text="resource.duration"></span><span data-i18n="seconds">{{ _('s') }}</span> | <span data-i18n="Keyword">{{ _('Keyword:') }}</span> <span x-text="resource.keyword"></span></small>
                         </div>
                         <small class="text-muted" x-text="'#' + (index + 1)"></small>
                     </div>
                 </template>
             </div>
             <div class="mt-3">
-                <small class="text-muted">共 <span x-text="results.resources?.length || 0"></span> 个视频素材</small>
+                <small class="text-muted"><span data-i18n="Total Video Materials">{{ _('Total') }}</span> <span x-text="results.resources?.length || 0"></span> <span data-i18n="video materials">{{ _('video materials') }}</span></small>
             </div>
         </div>
     </div>
@@ -119,33 +119,33 @@
 <!-- 步骤4: 语音合成 -->
 <div class="card mb-4" x-show="currentStep >= 4">
     <div class="card-header d-flex justify-content-between align-items-center">
-        <h5 class="card-title mb-0">
+        <h5 class="card-title mb-0" data-i18n="Step 4: Speech Synthesis">
             <i class="bi bi-mic me-2"></i>
-            步骤4: 语音合成
+            {{ _('Step 4: Speech Synthesis') }}
         </h5>
         <button class="btn btn-warning" @click="generateDubbing()" 
                 :disabled="!results.content || isLoading || isAutoRunning" x-show="!results.audio">
             <span x-show="!isLoading">
-                <i class="bi bi-mic me-2"></i>生成配音
+                <i class="bi bi-mic me-2"></i><span data-i18n="Generate Dubbing">{{ _('Generate Dubbing') }}</span>
             </span>
             <span x-show="isLoading">
-                <i class="bi bi-arrow-repeat spin me-2"></i>合成中...
+                <i class="bi bi-arrow-repeat spin me-2"></i><span data-i18n="Synthesizing...">{{ _('Synthesizing...') }}</span>
             </span>
         </button>
     </div>
     <div class="card-body">
         <div x-show="!results.audio && !isLoading" class="text-center text-muted py-4">
             <i class="bi bi-mic" style="font-size: 3rem; opacity: 0.3;"></i>
-            <p class="mt-2">等待生成AI配音</p>
+            <p class="mt-2" data-i18n="Waiting to generate AI dubbing">{{ _('Waiting to generate AI dubbing') }}</p>
         </div>
         
         <div x-show="results.audio" class="border rounded p-3 bg-light">
             <div class="d-flex align-items-center justify-content-between">
                 <div>
-                    <h6 class="fw-bold mb-1">配音已生成</h6>
+                    <h6 class="fw-bold mb-1" data-i18n="Dubbing Generated">{{ _('Dubbing Generated') }}</h6>
                     <small class="text-muted">
-                        时长: <span x-text="results.audio?.duration || '未知'"></span>秒 | 
-                        音色: <span x-text="results.audio?.voice || '默认'"></span>
+                        <span data-i18n="Duration">{{ _('Duration:') }}</span> <span x-text="results.audio?.duration || '{{ _('Unknown') }}'"></span><span data-i18n="seconds">{{ _('s') }}</span> | 
+                        <span data-i18n="Voice">{{ _('Voice:') }}</span> <span x-text="results.audio?.voice || '{{ _('Default') }}'"></span>
                     </small>
                 </div>
                 <div>
@@ -153,7 +153,7 @@
                            :key="results.audio?.url">
                         <source :src="results.audio?.url" type="audio/wav">
                         <source :src="results.audio?.url" type="audio/mpeg">
-                        您的浏览器不支持音频播放
+                        <span data-i18n="Browser audio not supported">{{ _('Your browser does not support audio playback') }}</span>
                     </audio>
                 </div>
             </div>
@@ -164,28 +164,28 @@
 <!-- 步骤5: 字幕生成 -->
 <div class="card mb-4" x-show="currentStep >= 5">
     <div class="card-header d-flex justify-content-between align-items-center">
-        <h5 class="card-title mb-0">
+        <h5 class="card-title mb-0" data-i18n="Step 5: Subtitle Generation">
             <i class="bi bi-chat-quote me-2"></i>
-            步骤5: 字幕生成
+            {{ _('Step 5: Subtitle Generation') }}
         </h5>
         <button class="btn btn-info" @click="generateSubtitle()" 
                 :disabled="!results.audio || isLoading || isAutoRunning" x-show="!results.subtitle">
             <span x-show="!isLoading">
-                <i class="bi bi-chat-quote me-2"></i>生成字幕
+                <i class="bi bi-chat-quote me-2"></i><span data-i18n="Generate Subtitles">{{ _('Generate Subtitles') }}</span>
             </span>
             <span x-show="isLoading">
-                <i class="bi bi-arrow-repeat spin me-2"></i>生成中...
+                <i class="bi bi-arrow-repeat spin me-2"></i><span data-i18n="Generating...">{{ _('Generating...') }}</span>
             </span>
         </button>
     </div>
     <div class="card-body">
         <div x-show="!results.subtitle && !isLoading" class="text-center text-muted py-4">
             <i class="bi bi-chat-quote" style="font-size: 3rem; opacity: 0.3;"></i>
-            <p class="mt-2">等待生成字幕文件</p>
+            <p class="mt-2" data-i18n="Waiting to generate subtitle file">{{ _('Waiting to generate subtitle file') }}</p>
         </div>
         
         <div x-show="results.subtitle" class="border rounded p-3 bg-light">
-            <h6 class="fw-bold mb-2">字幕预览:</h6>
+            <h6 class="fw-bold mb-2" data-i18n="Subtitle Preview">{{ _('Subtitle Preview:') }}</h6>
             <div style="max-height: 150px; overflow-y: auto; font-family: monospace; font-size: 0.9em;">
                 <template x-for="(sub, index) in results.subtitle?.lines" :key="index">
                     <div class="mb-1">
@@ -201,29 +201,29 @@
 <!-- 步骤6: 视频合成 -->
 <div class="card mb-4" x-show="currentStep >= 6">
     <div class="card-header d-flex justify-content-between align-items-center">
-        <h5 class="card-title mb-0">
+        <h5 class="card-title mb-0" data-i18n="Step 6: Video Composition">
             <i class="bi bi-play-circle me-2"></i>
-            步骤6: 视频合成
+            {{ _('Step 6: Video Composition') }}
         </h5>
         <button class="btn btn-danger" @click="generateVideo()" 
                 :disabled="!results.resources || !results.audio || isLoading || isAutoRunning" x-show="!results.video">
             <span x-show="!isLoading">
-                <i class="bi bi-play-circle me-2"></i>合成视频
+                <i class="bi bi-play-circle me-2"></i><span data-i18n="Compose Video">{{ _('Compose Video') }}</span>
             </span>
             <span x-show="isLoading">
-                <i class="bi bi-arrow-repeat spin me-2"></i>合成中...
+                <i class="bi bi-arrow-repeat spin me-2"></i><span data-i18n="Composing...">{{ _('Composing...') }}</span>
             </span>
         </button>
     </div>
     <div class="card-body">
         <div x-show="!results.video && !isLoading" class="text-center text-muted py-4">
             <i class="bi bi-play-circle" style="font-size: 3rem; opacity: 0.3;"></i>
-            <p class="mt-2">等待合成最终视频</p>
+            <p class="mt-2" data-i18n="Waiting to compose final video">{{ _('Waiting to compose final video') }}</p>
         </div>
         
         <div x-show="isLoading && progress > 0" class="mb-3">
             <div class="d-flex justify-content-between align-items-center mb-1">
-                <small class="fw-medium">视频合成进度</small>
+                <small class="fw-medium" data-i18n="Video Composition Progress">{{ _('Video Composition Progress') }}</small>
                 <small x-text="Math.round(progress) + '%'"></small>
             </div>
             <div class="progress" style="height: 8px;">
@@ -235,18 +235,18 @@
         <div x-show="results.video" class="border rounded p-3 bg-light">
             <div class="d-flex align-items-center justify-content-between">
                 <div>
-                    <h6 class="fw-bold mb-1">视频已生成</h6>
+                    <h6 class="fw-bold mb-1" data-i18n="Video Generated">{{ _('Video Generated') }}</h6>
                     <small class="text-muted">
-                        时长: <span x-text="results.video?.duration || '未知'"></span>秒 | 
-                        大小: <span x-text="results.video?.size || '未知'"></span>
+                        <span data-i18n="Duration">{{ _('Duration:') }}</span> <span x-text="results.video?.duration || '{{ _('Unknown') }}'"></span><span data-i18n="seconds">{{ _('s') }}</span> | 
+                        <span data-i18n="Size">{{ _('Size:') }}</span> <span x-text="results.video?.size || '{{ _('Unknown') }}'"></span>
                     </small>
                 </div>
                 <div>
                     <a :href="results.video?.url" class="btn btn-success btn-sm me-2" download>
-                        <i class="bi bi-download me-1"></i>下载
+                        <i class="bi bi-download me-1"></i><span data-i18n="Download">{{ _('Download') }}</span>
                     </a>
                     <button class="btn btn-primary btn-sm" @click="previewVideo()">
-                        <i class="bi bi-eye me-1"></i>预览
+                        <i class="bi bi-eye me-1"></i><span data-i18n="Preview">{{ _('Preview') }}</span>
                     </button>
                 </div>
             </div>
@@ -259,28 +259,28 @@
     <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="videoPreviewModalLabel">
-                    <i class="bi bi-play-circle me-2"></i>视频预览
+                <h5 class="modal-title" id="videoPreviewModalLabel" data-i18n="Video Preview">
+                    <i class="bi bi-play-circle me-2"></i>{{ _('Video Preview') }}
                 </h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body text-center">
                 <video id="previewVideoPlayer" class="w-100" controls style="max-height: 70vh; border-radius: 8px;">
-                    您的浏览器不支持视频播放
+                    <span data-i18n="Browser video not supported">{{ _('Your browser does not support video playback') }}</span>
                 </video>
                 <div class="mt-3">
                     <div class="row text-center">
                         <div class="col-4">
-                            <small class="text-muted">时长</small>
-                            <div class="fw-bold" x-text="results.video?.duration || '未知'"></div>
-                            <small class="text-muted">秒</small>
+                            <small class="text-muted" data-i18n="Duration">{{ _('Duration') }}</small>
+                            <div class="fw-bold" x-text="results.video?.duration || '{{ _('Unknown') }}'"></div>
+                            <small class="text-muted" data-i18n="seconds">{{ _('seconds') }}</small>
                         </div>
                         <div class="col-4">
-                            <small class="text-muted">分辨率</small>
-                            <div class="fw-bold" x-text="results.video?.resolution || '未知'"></div>
+                            <small class="text-muted" data-i18n="Resolution">{{ _('Resolution') }}</small>
+                            <div class="fw-bold" x-text="results.video?.resolution || '{{ _('Unknown') }}'"></div>
                         </div>
                         <div class="col-4">
-                            <small class="text-muted">格式</small>
+                            <small class="text-muted" data-i18n="Format">{{ _('Format') }}</small>
                             <div class="fw-bold" x-text="results.video?.format || 'MP4'"></div>
                         </div>
                     </div>
@@ -288,9 +288,9 @@
             </div>
             <div class="modal-footer">
                 <a :href="results.video?.url" class="btn btn-success" download>
-                    <i class="bi bi-download me-2"></i>下载视频
+                    <i class="bi bi-download me-2"></i><span data-i18n="Download Video">{{ _('Download Video') }}</span>
                 </a>
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" data-i18n="Close">{{ _('Close') }}</button>
             </div>
         </div>
     </div>
